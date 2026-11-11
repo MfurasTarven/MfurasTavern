@@ -65,6 +65,21 @@
 </head>
 <body class="min-h-screen flex flex-col justify-between antialiased selection:bg-theme-green selection:text-white pb-24 md:pb-0">
 
+    <!-- NOTIFICATION TOAST -->
+    <div id="cart-toast" class="fixed top-24 right-4 z-50 bg-black text-white px-5 py-3.5 rounded-2xl shadow-2xl border border-theme-border flex items-center gap-4 transition-all duration-300 transform translate-y-[-200%] opacity-0">
+        <div class="flex items-center gap-2.5">
+            <i class="fa-solid fa-circle-check text-theme-green text-lg"></i>
+            <div>
+                <p class="text-xs font-bold text-white" id="toast-msg">Added to cart successfully!</p>
+                <p class="text-[10px] text-gray-400">Review your order or continue browsing.</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-2 border-l border-gray-700 pl-4">
+            <button onclick="toggleCartModal(true); hideToast();" class="px-3 py-1.5 bg-theme-green text-black font-extrabold text-xs rounded-xl hover:bg-theme-darkGreen hover:text-white transition-all">Review</button>
+            <button onclick="hideToast()" class="px-3 py-1.5 bg-gray-800 text-white font-bold text-xs rounded-xl hover:bg-gray-700 transition-all">Continue Order</button>
+        </div>
+    </div>
+
     <!-- TOP STICKY HEADER -->
     <header class="sticky top-0 z-40 bg-white border-b border-theme-border shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -79,7 +94,7 @@
                         <span class="text-xs font-bold text-black flex items-center gap-1">
                             Mfura's Tavern <i class="fa-solid fa-circle-check text-theme-green text-[10px]"></i>
                         </span>
-                        <span class="text-[11px] text-theme-textMuted">Fourrooms • Chesanyama & Drinks</span>
+                        <span class="text-[11px] text-theme-textMuted">Fourrooms • Braai & Drinks</span>
                     </div>
                 </div>
 
@@ -119,7 +134,7 @@
                 <div>
                     <span class="bg-theme-green text-black text-[10px] font-black uppercase px-2.5 py-1 rounded-md tracking-wider">Official Braai Spot</span>
                     <h1 class="text-2xl sm:text-4xl font-black tracking-tight mt-1">Mfura's Tavern</h1>
-                    <p class="text-xs sm:text-sm text-gray-200 mt-0.5">Chesanyama, Ice Cold Beers, Ciders, Spirits & Pool Tournament</p>
+                    <p class="text-xs sm:text-sm text-gray-200 mt-0.5">Braai Meat, Ice Cold Beers, Ciders, Spirits & Pool Tournament</p>
                 </div>
             </div>
         </div>
@@ -154,7 +169,7 @@
     <div class="sticky top-20 z-30 bg-white/95 backdrop-blur-md border-b border-theme-border py-3 shadow-xs">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center space-x-2 overflow-x-auto hide-scrollbar text-xs font-bold">
-                <a href="#cat-meat" class="cat-pill bg-black text-white px-4 py-2 rounded-full whitespace-nowrap transition-all">🔥 Chesanyama Meat (From R20)</a>
+                <a href="#cat-meat" class="cat-pill bg-black text-white px-4 py-2 rounded-full whitespace-nowrap transition-all">🔥 Braai Meat (Custom Price R50-R550)</a>
                 <a href="#cat-ciders" class="cat-pill bg-theme-grayBg hover:bg-theme-lightGray text-black px-4 py-2 rounded-full whitespace-nowrap transition-all">🍏 Ciders (6-Packs)</a>
                 <a href="#cat-spirits" class="cat-pill bg-theme-grayBg hover:bg-theme-lightGray text-black px-4 py-2 rounded-full whitespace-nowrap transition-all">🥃 Shots & Spirits</a>
                 <a href="#cat-beers" class="cat-pill bg-theme-grayBg hover:bg-theme-lightGray text-black px-4 py-2 rounded-full whitespace-nowrap transition-all">🍺 Beers & Quarts</a>
@@ -167,14 +182,14 @@
     <!-- MAIN MENU CONTENT -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow space-y-12">
 
-        <!-- CATEGORY 1: MEAT SECTION (CHESANYAMA) -->
+        <!-- CATEGORY 1: MEAT SECTION (BRAAI) -->
         <section id="cat-meat" class="scroll-mt-36">
             <div class="flex items-center justify-between border-b border-theme-border pb-3 mb-6">
                 <div>
                     <h2 class="text-2xl font-black text-black flex items-center gap-2">
-                        🔥 Chesanyama Meat Selection
+                        🔥 Braai Meat Selection (Custom Price R50 - R550)
                     </h2>
-                    <p class="text-xs text-theme-textMuted mt-0.5">Select portion price, prep style (Raw vs Braaied), and condiments.</p>
+                    <p class="text-xs text-theme-textMuted mt-0.5">Type in your custom price (R50 to R550), select prep style, and condiments.</p>
                 </div>
                 <span class="text-xs font-extrabold bg-theme-lightGreen text-theme-darkGreen px-3 py-1 rounded-full border border-theme-green/30">Fresh off the Braai</span>
             </div>
@@ -185,8 +200,8 @@
                 <div class="bg-white rounded-2xl border border-theme-border hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col justify-between">
                     <div>
                         <div class="h-44 bg-theme-grayBg relative overflow-hidden">
-                            <img src="beef.jpeg" alt="Beef Chesanyama" class="w-full h-full object-cover">
-                            <span class="absolute top-3 left-3 bg-black text-white text-[11px] font-black px-2.5 py-1 rounded-md">From R20.00</span>
+                            <img src="beef.jpeg" alt="Beef Braai" class="w-full h-full object-cover">
+                            <span class="absolute top-3 left-3 bg-black text-white text-[11px] font-black px-2.5 py-1 rounded-md">Custom Price R50 - R550</span>
                         </div>
                         <div class="p-5 space-y-4">
                             <div>
@@ -196,19 +211,14 @@
 
                             <div class="space-y-3 pt-3 border-t border-theme-border text-xs">
                                 <div>
-                                    <label class="block font-bold text-black mb-1">Select Portion Size:</label>
-                                    <select id="beef_price" class="w-full bg-theme-grayBg border border-theme-border rounded-xl px-3 py-2 text-xs font-semibold text-black focus:outline-none focus:border-black">
-                                        <option value="20">Small Portion - R20.00</option>
-                                        <option value="40">Medium Portion - R40.00</option>
-                                        <option value="60">Standard Cut - R60.00</option>
-                                        <option value="100" selected>Large Feast Cut - R100.00</option>
-                                    </select>
+                                    <label class="block font-bold text-black mb-1">Enter Price (R50 - R550):</label>
+                                    <input type="number" id="beef_price" min="50" max="550" value="50" class="w-full bg-theme-grayBg border border-theme-border rounded-xl px-3.5 py-2.5 text-xs font-bold text-black focus:outline-none focus:border-black" placeholder="Enter amount (e.g. 100)">
                                 </div>
                                 <div>
                                     <label class="block font-bold text-black mb-1">Preparation Style:</label>
                                     <div class="grid grid-cols-2 gap-2">
                                         <label class="flex items-center justify-center p-2 rounded-xl border border-theme-border bg-theme-grayBg cursor-pointer hover:border-black text-xs font-bold text-black">
-                                            <input type="radio" name="beef_prep" value="Braaied" checked class="accent-theme-green mr-1.5"> Braaied
+                                            <input type="radio" name="beef_prep" value="Braai" checked class="accent-theme-green mr-1.5"> Braai
                                         </label>
                                         <label class="flex items-center justify-center p-2 rounded-xl border border-theme-border bg-theme-grayBg cursor-pointer hover:border-black text-xs font-bold text-black">
                                             <input type="radio" name="beef_prep" value="Raw" class="accent-theme-green mr-1.5"> Raw
@@ -244,7 +254,7 @@
                     <div>
                         <div class="h-44 bg-theme-grayBg relative overflow-hidden">
                             <img src="pork.jpeg" alt="Pork Chops" class="w-full h-full object-cover">
-                            <span class="absolute top-3 left-3 bg-black text-white text-[11px] font-black px-2.5 py-1 rounded-md">From R20.00</span>
+                            <span class="absolute top-3 left-3 bg-black text-white text-[11px] font-black px-2.5 py-1 rounded-md">Custom Price R50 - R550</span>
                         </div>
                         <div class="p-5 space-y-4">
                             <div>
@@ -254,19 +264,14 @@
 
                             <div class="space-y-3 pt-3 border-t border-theme-border text-xs">
                                 <div>
-                                    <label class="block font-bold text-black mb-1">Select Portion Size:</label>
-                                    <select id="pork_price" class="w-full bg-theme-grayBg border border-theme-border rounded-xl px-3 py-2 text-xs font-semibold text-black focus:outline-none focus:border-black">
-                                        <option value="20">Small Cut - R20.00</option>
-                                        <option value="40">Medium Cut - R40.00</option>
-                                        <option value="60">Standard Portion - R60.00</option>
-                                        <option value="100" selected>Large Feast Portion - R100.00</option>
-                                    </select>
+                                    <label class="block font-bold text-black mb-1">Enter Price (R50 - R550):</label>
+                                    <input type="number" id="pork_price" min="50" max="550" value="50" class="w-full bg-theme-grayBg border border-theme-border rounded-xl px-3.5 py-2.5 text-xs font-bold text-black focus:outline-none focus:border-black" placeholder="Enter amount (e.g. 100)">
                                 </div>
                                 <div>
                                     <label class="block font-bold text-black mb-1">Preparation Style:</label>
                                     <div class="grid grid-cols-2 gap-2">
                                         <label class="flex items-center justify-center p-2 rounded-xl border border-theme-border bg-theme-grayBg cursor-pointer hover:border-black text-xs font-bold text-black">
-                                            <input type="radio" name="pork_prep" value="Braaied" checked class="accent-theme-green mr-1.5"> Braaied
+                                            <input type="radio" name="pork_prep" value="Braai" checked class="accent-theme-green mr-1.5"> Braai
                                         </label>
                                         <label class="flex items-center justify-center p-2 rounded-xl border border-theme-border bg-theme-grayBg cursor-pointer hover:border-black text-xs font-bold text-black">
                                             <input type="radio" name="pork_prep" value="Raw" class="accent-theme-green mr-1.5"> Raw
@@ -302,7 +307,7 @@
                     <div>
                         <div class="h-44 bg-theme-grayBg relative overflow-hidden">
                             <img src="Wors.jpeg" alt="Sausage Wors" class="w-full h-full object-cover">
-                            <span class="absolute top-3 left-3 bg-black text-white text-[11px] font-black px-2.5 py-1 rounded-md">From R20.00</span>
+                            <span class="absolute top-3 left-3 bg-black text-white text-[11px] font-black px-2.5 py-1 rounded-md">Custom Price R50 - R550</span>
                         </div>
                         <div class="p-5 space-y-4">
                             <div>
@@ -312,19 +317,14 @@
 
                             <div class="space-y-3 pt-3 border-t border-theme-border text-xs">
                                 <div>
-                                    <label class="block font-bold text-black mb-1">Select Portion Size:</label>
-                                    <select id="sausage_price" class="w-full bg-theme-grayBg border border-theme-border rounded-xl px-3 py-2 text-xs font-semibold text-black focus:outline-none focus:border-black">
-                                        <option value="20">Single Piece - R20.00</option>
-                                        <option value="40">Medium Piece - R40.00</option>
-                                        <option value="60">Half Reel - R60.00</option>
-                                        <option value="100" selected>Full Wors Reel - R100.00</option>
-                                    </select>
+                                    <label class="block font-bold text-black mb-1">Enter Price (R50 - R550):</label>
+                                    <input type="number" id="sausage_price" min="50" max="550" value="50" class="w-full bg-theme-grayBg border border-theme-border rounded-xl px-3.5 py-2.5 text-xs font-bold text-black focus:outline-none focus:border-black" placeholder="Enter amount (e.g. 100)">
                                 </div>
                                 <div>
                                     <label class="block font-bold text-black mb-1">Preparation Style:</label>
                                     <div class="grid grid-cols-2 gap-2">
                                         <label class="flex items-center justify-center p-2 rounded-xl border border-theme-border bg-theme-grayBg cursor-pointer hover:border-black text-xs font-bold text-black">
-                                            <input type="radio" name="sausage_prep" value="Braaied" checked class="accent-theme-green mr-1.5"> Braaied
+                                            <input type="radio" name="sausage_prep" value="Braai" checked class="accent-theme-green mr-1.5"> Braai
                                         </label>
                                         <label class="flex items-center justify-center p-2 rounded-xl border border-theme-border bg-theme-grayBg cursor-pointer hover:border-black text-xs font-bold text-black">
                                             <input type="radio" name="sausage_prep" value="Raw" class="accent-theme-green mr-1.5"> Raw
@@ -389,7 +389,7 @@
         <section id="cat-wine" class="scroll-mt-36">
             <div class="border-b border-theme-border pb-3 mb-6">
                 <h2 class="text-2xl font-black text-black">🍷 Boxed Wine & Ice Packs</h2>
-                <p class="text-xs text-theme-textMuted mt-0.5">5L wines and 2kg ice bags.</p>
+                <p class="text-xs text-theme-textMuted mt-0.5">Wines and 2kg ice bags.</p>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="wine-container"></div>
         </section>
@@ -596,7 +596,7 @@
                     </div>
                     <div class="flex justify-between text-base font-black text-black pt-2 border-t border-theme-border">
                         <span>Total Due</span>
-                        <span id="summary-total" class="text-theme-green">R0.00</span>
+                        <span id="summary-total" class="text-uber-green">R0.00</span>
                     </div>
                 </div>
 
@@ -655,7 +655,7 @@
         </div>
     </div>
 
-    <!-- JAVASCRIPT DATA MAPPED TO EXACT .jpeg / .png FILENAMES -->
+    <!-- JAVASCRIPT DATA -->
     <script>
         const menuData = {
             ciders: [
@@ -678,7 +678,7 @@
             ],
             wine: [
                 { id: 'w1', name: 'Raindance Boxed Wine (5L)', price: 150, desc: '5 Litre Cask Wine', image: 'Bernini.png' },
-                { id: 'w2', name: '4th Street Sweet Wine', price: 155, desc: 'Boxed Wine', image: 'Bernini.png' },
+                { id: 'w2', name: '4th Street Wine', price: 155, desc: 'Sweet Wine', image: 'Bernini.png' },
                 { id: 'ex1', name: 'Fresh Ice Pack (2kg)', price: 35, desc: '2kg Bag of Chilled Ice Cubes', image: 'ice.jpeg' }
             ]
         };
@@ -693,6 +693,20 @@
 
         function scrollToTop() {
             window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('cart-toast');
+            document.getElementById('toast-msg').innerText = message;
+            toast.classList.remove('translate-y-[-200%]', 'opacity-0');
+            setTimeout(() => {
+                hideToast();
+            }, 4500);
+        }
+
+        function hideToast() {
+            const toast = document.getElementById('cart-toast');
+            toast.classList.add('translate-y-[-200%]', 'opacity-0');
         }
 
         function setHeaderOrderType(type) {
@@ -771,11 +785,26 @@
                 cart.push({ id: id, name: name, price: price, qty: 1, image: image });
             }
             updateCartUI();
-            toggleCartModal(true);
+            showToast(`${name} added to cart!`);
         }
 
-        function addMeatToCart(meatType, priceSelectId, prepRadioName, condCheckIds) {
-            const priceVal = parseFloat(document.getElementById(priceSelectId).value);
+        function addMeatToCart(meatType, priceInputId, prepRadioName, condCheckIds) {
+            const priceInput = document.getElementById(priceInputId);
+            let priceVal = parseFloat(priceInput.value);
+
+            if (isNaN(priceVal) || priceVal < 50) {
+                alert("Minimum price for meat is R50.");
+                priceInput.value = 50;
+                priceVal = 50;
+                return;
+            }
+            if (priceVal > 550) {
+                alert("Maximum price for meat is R550.");
+                priceInput.value = 550;
+                priceVal = 550;
+                return;
+            }
+
             const prepValue = document.querySelector(`input[name="${prepRadioName}"]:checked`).value;
             
             const conds = [];
@@ -799,7 +828,7 @@
                 cart.push({
                     id: itemKey,
                     name: itemTitle,
-                    details: `Portion R${priceVal.toFixed(2)} • Condiments: ${condStr}`,
+                    details: `Custom Price R${priceVal.toFixed(2)} • Condiments: ${condStr}`,
                     price: priceVal,
                     qty: 1,
                     image: meatImg
@@ -807,7 +836,7 @@
             }
 
             updateCartUI();
-            toggleCartModal(true);
+            showToast(`${itemTitle} (R${priceVal}) added to cart!`);
         }
 
         function changeQty(id, delta) {
@@ -832,7 +861,7 @@
                 container.innerHTML = `
                     <div class="text-center py-8 text-theme-textMuted text-xs">
                         <i class="fa-solid fa-basket-shopping text-3xl mb-2 text-gray-300 block"></i>
-                        Your Tavern cart is empty. Add drinks or Chesanyama meat to start!
+                        Your Tavern cart is empty. Add drinks or Braai meat to start!
                     </div>
                 `;
             } else {
