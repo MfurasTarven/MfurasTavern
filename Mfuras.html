@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en" class="light scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mfura's Tavern | Uber Eats South Africa</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        uber: {
+                            green: '#06C167',
+                            darkGreen: '#059E54',
+                            lightGreen: '#E6F9F0',
+                            black: '#000000',
+                            grayBg: '#F6F6F6',
+                            cardBg: '#FFFFFF',
+                            textDark: '#000000',
+                            textMuted: '#5E5E5E',
+                            border: '#EEEEEE',
+                            lightGray: '#F3F3F3'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome & Google Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: #FFFFFF;
+            color: #000000;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F6F6F6;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #D1D5DB;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #06C167;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between antialiased selection:bg-uber-green selection:text-white pb-24 md:pb-0">
+
+    <!-- TOP STICKY HEADER -->
+    <header class="sticky top-0 z-40 bg-white border-b border-uber-border shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20 gap-4">
+                
+                <div class="flex items-center gap-4 cursor-pointer" onclick="scrollToTop()">
+                    <div class="flex items-center gap-1.5 font-black text-xl sm:text-2xl tracking-tighter">
+                        <span class="text-black">Uber</span>
+                        <span class="text-uber-green">Eats</span>
+                    </div>
+                    <div class="h-6 w-px bg-uber-border hidden sm:block"></div>
+                    <div class="hidden sm:flex flex-col">
+                        <span class="text-xs font-bold text-black flex items-center gap-1">
+                            Mfura's Tavern <i class="fa-solid fa-circle-check text-uber-green text-[10px]"></i>
+                        </span>
+                        <span class="text-[11px] text-uber-textMuted">Fourrooms • Chesanyama & Drinks</span>
+                    </div>
+                </div>
+
+                <div class="flex items-center bg-uber-grayBg p-1 rounded-full border border-uber-border">
+                    <button type="button" id="header-btn-delivery" onclick="setHeaderOrderType('Delivery')" class="px-4 py-1.5 rounded-full text-xs font-extrabold transition-all duration-200 bg-black text-white shadow-sm flex items-center gap-1.5">
+                        <i class="fa-solid fa-truck text-[11px]"></i> Delivery
+                    </button>
+                    <button type="button" id="header-btn-pickup" onclick="setHeaderOrderType('Pickup')" class="px-4 py-1.5 rounded-full text-xs font-extrabold transition-all duration-200 text-uber-textMuted hover:text-black flex items-center gap-1.5">
+                        <i class="fa-solid fa-person-walking text-[11px]"></i> Pickup (Free)
+                    </button>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <div class="relative hidden md:block w-48 lg:w-64">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-uber-textMuted text-xs"></i>
+                        <input type="text" id="menu-search-input" onkeyup="handleMenuSearch()" placeholder="Search Mfura's menu..." class="w-full bg-uber-grayBg border border-transparent focus:border-black rounded-full pl-9 pr-4 py-2 text-xs font-medium text-black focus:outline-none transition-all">
+                    </div>
+
+                    <button onclick="toggleCartModal(true)" class="relative bg-black hover:bg-uber-darkGreen text-white px-4 py-2.5 rounded-full font-bold text-xs transition-all flex items-center gap-2.5 shadow-md">
+                        <i class="fa-solid fa-basket-shopping text-sm text-uber-green"></i>
+                        <span class="hidden sm:inline">Checkout</span>
+                        <span id="cart-badge-count" class="bg-uber-green text-black text-[11px] font-black rounded-full h-5 px-1.5 flex items-center justify-center">0</span>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </header>
+
+    <!-- STORE HERO BANNER -->
+    <section class="bg-white border-b border-uber-border">
+        <div class="h-48 sm:h-64 lg:h-72 w-full bg-slate-900 relative overflow-hidden">
+            <!-- Using your uploaded logo / header image -->
+            <img src="Mfura’s Suggest logo.png" alt="Mfura's Tavern Logo" class="w-full h-full object-cover opacity-65">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+            
+            <div class="absolute bottom-4 left-4 right-4 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-white flex justify-between items-end">
+                <div>
+                    <span class="bg-uber-green text-black text-[10px] font-black uppercase px-2.5 py-1 rounded-md tracking-wider">Official Kasi Delica</span>
+                    <h1 class="text-2xl sm:text-4xl font-black tracking-tight mt-1">Mfura's Tavern</h1>
+                    <p class="text-xs sm:text-sm text-gray-200 mt-0.5">Chesanyama, Ice Cold Beers, Ciders, Spirits & Pool Tournament</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex flex-wrap items-center justify-between gap-4 text-xs font-semibold">
+                <div class="flex flex-wrap items-center gap-4 text-uber-textDark">
+                    <div class="flex items-center gap-1.5 bg-uber-lightGreen px-2.5 py-1 rounded-full text-uber-darkGreen font-extrabold">
+                        <i class="fa-solid fa-star text-xs"></i> 4.8 <span class="text-uber-textMuted font-normal text-[11px]">(200+ ratings)</span>
+                    </div>
+                    <div class="flex items-center gap-1.5 text-uber-textMuted">
+                        <i class="fa-regular fa-clock"></i> Delivery Time: <strong class="text-black">20–40 min</strong>
+                    </div>
+                    <div class="flex items-center gap-1.5 text-uber-textMuted">
+                        <i class="fa-solid fa-location-dot text-uber-green"></i> 793 Roma Street, Fourrooms, Ilinge
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <a href="https://maps.app.goo.gl/3i6N6sLU4X3Bt1tD7" target="_blank" rel="noopener noreferrer" class="px-3.5 py-1.5 rounded-full border border-uber-border bg-uber-grayBg hover:bg-black hover:text-white transition-all text-[11px] font-bold text-black flex items-center gap-1.5">
+                        <i class="fa-solid fa-map-location-dot text-uber-green"></i> Google Maps Pin
+                    </a>
+                    <button onclick="toggleContactModal(true)" class="px-3.5 py-1.5 rounded-full border border-uber-border bg-uber-grayBg hover:bg-black hover:text-white transition-all text-[11px] font-bold text-black flex items-center gap-1.5">
+                        <i class="fa-solid fa-phone text-uber-green"></i> Tavern Contacts
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- STICKY CATEGORY NAV -->
+    <div class="sticky top-20 z-30 bg-white/95 backdrop-blur-md border-b border-uber-border py-3 shadow-xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center space-x-2 overflow-x-auto hide-scrollbar text-xs font-bold">
+                <a href="#cat-meat" class="cat-pill bg-black text-white px-4 py-2 rounded-full whitespace-nowrap transition-all">🔥 Chesanyama Meat (From R20)</a>
+                <a href="#cat-ciders" class="cat-pill bg-uber-grayBg hover:bg-uber-lightGray text-black px-4 py-2 rounded-full whitespace-nowrap transition-all">🍏 Ciders (6-Packs)</a>
+                <a href="#cat-spirits" class="cat-pill bg-uber-grayBg hover:bg-uber-lightGray text-black px-4 py-2 rounded-full whitespace-nowrap transition-all">🥃 Shots & Spirits</a>
+                <a href="#cat-beers" class="cat-pill bg-uber-grayBg hover:bg-uber-lightGray text-black px-4 py-2 rounded-full whitespace-nowrap transition-all">🍺 Beers & Quarts</a>
+                <a href="#cat-wine" class="cat-pill bg-uber-grayBg hover:bg-uber-lightGray text-black px-4 py-2 rounded-full whitespace-nowrap transition-all">🍷 Wine & Extras</a>
+                <a href="#cat-pool" class="cat-pill bg-uber-lightGreen text-uber-darkGreen border border-uber-green/30 px-4 py-2 rounded-full whitespace-nowrap transition-all">🎱 Pool Tournament</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN MENU CONTENT -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow space-y-12">
+
+        <!-- CATEGORY 1: MEAT SECTION (CHESANYAMA) -->
+        <section id="cat-meat" class="scroll-mt-36">
+            <div class="flex items-center justify-between border-b border-uber-border pb-3 mb-6">
+                <div>
+                    <h2 class="text-2xl font-black text-black flex items-center gap-2">
+                        🔥 Chesanyama Meat Selection
+                    </h2>
+                    <p class="text-xs text-uber-textMuted mt-0.5">Select portion price, prep style (Raw vs Braaied), and condiments.</p>
+                </div>
+                <span class="text-xs font-extrabold bg-uber-lightGreen text-uber-darkGreen px-3 py-1 rounded-full border border-uber-green/30">Fresh off the Braai</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                
+                <!-- Beef Card -->
+                <div class="bg-white rounded-2xl border border-uber-border hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col justify-between">
+                    <div>
+                        <div class="h-44 bg-uber-grayBg relative overflow-hidden">
+                            <img src="beef" alt="Beef Chesanyama" class="w-full h-full object-cover">
+                            <span class="absolute top-3 left-3 bg-black text-white text-[11px] font-black px-2.5 py-1 rounded-md">From R20.00</span>
+                        </div>
+                        <div class="p-5 space-y-4">
+                            <div>
+                                <h3 class="font-extrabold text-lg text-black">Beef Steak Cut</h3>
+                                <p class="text-xs text-uber-textMuted mt-1">Juicy kasi beef steak cut grilled to perfection or delivered raw.</p>
+                            </div>
+
+                            <div class="space-y-3 pt-3 border-t border-uber-border text-xs">
+                                <div>
+                                    <label class="block font-bold text-black mb-1">Select Portion Size:</label>
+                                    <select id="beef_price" class="w-full bg-uber-grayBg border border-uber-border rounded-xl px-3 py-2 text-xs font-semibold text-black focus:outline-none focus:border-black">
+                                        <option value="20">Small Portion - R20.00</option>
+                                        <option value="40">Medium Portion - R40.00</option>
+                                        <option value="60">Standard Cut - R60.00</option>
+                                        <option value="100" selected>Large Feast Cut - R100.00</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block font-bold text-black mb-1">Preparation Style:</label>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <label class="flex items-center justify-center p-2 rounded-xl border border-uber-border bg-uber-grayBg cursor-pointer hover:border-black text-xs font-bold text-black">
+                                            <input type="radio" name="beef_prep" value="Braaied" checked class="accent-uber-green mr-1.5"> Braaied
+                                        </label>
+                                        <label class="flex items-center justify-center p-2 rounded-xl border border-uber-border bg-uber-grayBg cursor-pointer hover:border-black text-xs font-bold text-black">
+                                            <input type="radio" name="beef_prep" value="Raw" class="accent-uber-green mr-1.5"> Raw
+                                        </label>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block font-bold text-black mb-1">Condiments (Included):</label>
+                                    <div class="flex flex-wrap gap-2">
+                                        <label class="inline-flex items-center bg-uber-grayBg px-2.5 py-1 rounded-lg border border-uber-border text-black text-[11px] font-semibold">
+                                            <input type="checkbox" id="beef_spice" checked class="accent-uber-green mr-1.5"> Spice
+                                        </label>
+                                        <label class="inline-flex items-center bg-uber-grayBg px-2.5 py-1 rounded-lg border border-uber-border text-black text-[11px] font-semibold">
+                                            <input type="checkbox" id="beef_salt" checked class="accent-uber-green mr-1.5"> Salt
+                                        </label>
+                                        <label class="inline-flex items-center bg-uber-grayBg px-2.5 py-1 rounded-lg border border-uber-border text-black text-[11px] font-semibold">
+                                            <input type="checkbox" id="beef_sauce" checked class="accent-uber-green mr-1.5"> Sauce
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-5 pt-0">
+                        <button onclick="addMeatToCart('Beef', 'beef_price', 'beef_prep', ['beef_spice', 'beef_salt', 'beef_sauce'])" class="w-full py-3 rounded-xl bg-uber-green hover:bg-uber-darkGreen text-white font-black text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-md">
+                            <i class="fa-solid fa-plus"></i> Add Beef to Order
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Pork Card -->
+                <div class="bg-white rounded-2xl border border-uber-border hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col justify-between">
+                    <div>
+                        <div class="h-44 bg-uber-grayBg relative overflow-hidden">
+                            <img src="pork" alt="Pork Chops" class="w-full h-full object-cover">
+                            <span class="absolute top-3 left-3 bg-black text-white text-[11px] font-black px-2.5 py-1 rounded-md">From R20.00</span>
+                        </div>
+                        <div class="p-5 space-y-4">
+                            <div>
+                                <h3 class="font-extrabold text-lg text-black">Succulent Pork Chops</h3>
+                                <p class="text-xs text-uber-textMuted mt-1">Marinated pork chops cooked over open flames or delivered fresh raw.</p>
+                            </div>
+
+                            <div class="space-y-3 pt-3 border-t border-uber-border text-xs">
+                                <div>
+                                    <label class="block font-bold text-black mb-1">Select Portion Size:</label>
+                                    <select id="pork_price" class="w-full bg-uber-grayBg border border-uber-border rounded-xl px-3 py-2 text-xs font-semibold text-black focus:outline-none focus:border-black">
+                                        <option value="20">Small Cut - R20.00</option>
+                                        <option value="40">Medium Cut - R40.00</option>
+                                        <option value="60">Standard Portion - R60.00</option>
+                                        <option value="100" selected>Large Feast Portion - R100.00</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block font-bold text-black mb-1">Preparation Style:</label>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <label class="flex items-center justify-center p-2 rounded-xl border border-uber-border bg-uber-grayBg cursor-pointer hover:border-black text-xs font-bold text-black">
+                                            <input type="radio" name="pork_prep" value="Braaied" checked class="accent-uber-green mr-1.5"> Braaied
+                                        </label>
+                                        <label class="flex items-center justify-center p-2 rounded-xl border border-uber-border bg-uber-grayBg cursor-pointer hover:border-black text-xs font-bold text-black">
+                                            <input type="radio" name="pork_prep" value="Raw" class="accent-uber-green mr-1.5"> Raw
+                                        </label>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block font-bold text-black mb-1">Condiments (Included):</label>
+                                    <div class="flex flex-wrap gap-2">
+                                        <label class="inline-flex items-center bg-uber-grayBg px-2.5 py-1 rounded-lg border border-uber-border text-black text-[11px] font-semibold">
+                                            <input type="checkbox" id="pork_spice" checked class="accent-uber-green mr-1.5"> Spice
+                                        </label>
+                                        <label class="inline-flex items-center bg-uber-grayBg px-2.5 py-1 rounded-lg border border-uber-border text-black text-[11px] font-semibold">
+                                            <input type="checkbox" id="pork_salt" checked class="accent-uber-green mr-1.5"> Salt
+                                        </label>
+                                        <label class="inline-flex items-center bg-uber-grayBg px-2.5 py-1 rounded-lg border border-uber-border text-black text-[11px] font-semibold">
+                                            <input type="checkbox" id="pork_sauce" checked class="accent-uber-green mr-1.5"> Sauce
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-5 pt-0">
+                        <button onclick="addMeatToCart('Pork', 'pork_price', 'pork_prep', ['pork_spice', 'pork_salt', 'pork_sauce'])" class="w-full py-3 rounded-xl bg-uber-green hover:bg-uber-darkGreen text-white font-black text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-md">
+                            <i class="fa-solid fa-plus"></i> Add Pork to Order
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Sausage / Wors Card -->
+                <div class="bg-white rounded-2xl border border-uber-border hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col justify-between">
+                    <div>
+                        <div class="h-44 bg-uber-grayBg relative overflow-hidden">
+                            <img src="Wors" alt="Sausage Wors" class="w-full h-full object-cover">
+                            <span class="absolute top-3 left-3 bg-black text-white text-[11px] font-black px-2.5 py-1 rounded-md">From R20.00</span>
+                        </div>
+                        <div class="p-5 space-y-4">
+                            <div>
+                                <h3 class="font-extrabold text-lg text-black">Traditional Sausage / Wors</h3>
+                                <p class="text-xs text-uber-textMuted mt-1">Flavorful traditional South African boerewors reel.</p>
+                            </div>
+
+                            <div class="space-y-3 pt-3 border-t border-uber-border text-xs">
+                                <div>
+                                    <label class="block font-bold text-black mb-1">Select Portion Size:</label>
+                                    <select id="sausage_price" class="w-full bg-uber-grayBg border border-uber-border rounded-xl px-3 py-2 text-xs font-semibold text-black focus:outline-none focus:border-black">
+                                        <option value="20">Single Piece - R20.00</option>
+                                        <option value="40">Medium Piece - R40.00</option>
+                                        <option value="60">Half Reel - R60.00</option>
+                                        <option value="100" selected>Full Wors Reel - R100.00</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block font-bold text-black mb-1">Preparation Style:</label>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <label class="flex items-center justify-center p-2 rounded-xl border border-uber-border bg-uber-grayBg cursor-pointer hover:border-black text-xs font-bold text-black">
+                                            <input type="radio" name="sausage_prep" value="Braaied" checked class="accent-uber-green mr-1.5"> Braaied
+                                        </label>
+                                        <label class="flex items-center justify-center p-2 rounded-xl border border-uber-border bg-uber-grayBg cursor-pointer hover:border-black text-xs font-bold text-black">
+                                            <input type="radio" name="sausage_prep" value="Raw" class="accent-uber-green mr-1.5"> Raw
+                                        </label>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block font-bold text-black mb-1">Condiments (Included):</label>
+                                    <div class="flex flex-wrap gap-2">
+                                        <label class="inline-flex items-center bg-uber-grayBg px-2.5 py-1 rounded-lg border border-uber-border text-black text-[11px] font-semibold">
+                                            <input type="checkbox" id="sausage_spice" checked class="accent-uber-green mr-1.5"> Spice
+                                        </label>
+                                        <label class="inline-flex items-center bg-uber-grayBg px-2.5 py-1 rounded-lg border border-uber-border text-black text-[11px] font-semibold">
+                                            <input type="checkbox" id="sausage_salt" checked class="accent-uber-green mr-1.5"> Salt
+                                        </label>
+                                        <label class="inline-flex items-center bg-uber-grayBg px-2.5 py-1 rounded-lg border border-uber-border text-black text-[11px] font-semibold">
+                                            <input type="checkbox" id="sausage_sauce" checked class="accent-uber-green mr-1.5"> Sauce
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-5 pt-0">
+                        <button onclick="addMeatToCart('Sausage', 'sausage_price', 'sausage_prep', ['sausage_spice', 'sausage_salt', 'sausage_sauce'])" class="w-full py-3 rounded-xl bg-uber-green hover:bg-uber-darkGreen text-white font-black text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-md">
+                            <i class="fa-solid fa-plus"></i> Add Sausage to Order
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- CATEGORY 2: CIDERS (6-PACKS) -->
+        <section id="cat-ciders" class="scroll-mt-36">
+            <div class="border-b border-uber-border pb-3 mb-6">
+                <h2 class="text-2xl font-black text-black">🍏 Ciders (6-Packs)</h2>
+                <p class="text-xs text-uber-textMuted mt-0.5">Chilled 6-packs ready for instant delivery.</p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="ciders-container"></div>
+        </section>
+
+        <!-- CATEGORY 3: SHOTS & SPIRITS -->
+        <section id="cat-spirits" class="scroll-mt-36">
+            <div class="border-b border-uber-border pb-3 mb-6">
+                <h2 class="text-2xl font-black text-black">🥃 Shots & Spirits</h2>
+                <p class="text-xs text-uber-textMuted mt-0.5">Premium spirit bottles & cognac.</p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="spirits-container"></div>
+        </section>
+
+        <!-- CATEGORY 4: BEERS & QUARTS -->
+        <section id="cat-beers" class="scroll-mt-36">
+            <div class="border-b border-uber-border pb-3 mb-6">
+                <h2 class="text-2xl font-black text-black">🍺 Beers & Quarts (750ml)</h2>
+                <p class="text-xs text-uber-textMuted mt-0.5">Cold 6-packs and single 750ml quarts.</p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="beers-container"></div>
+        </section>
+
+        <!-- CATEGORY 5: WINE & EXTRAS -->
+        <section id="cat-wine" class="scroll-mt-36">
+            <div class="border-b border-uber-border pb-3 mb-6">
+                <h2 class="text-2xl font-black text-black">🍷 Boxed Wine & Ice Packs</h2>
+                <p class="text-xs text-uber-textMuted mt-0.5">5L wines and 2kg ice bags.</p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="wine-container"></div>
+        </section>
+
+        <!-- CATEGORY 6: POOL TOURNAMENT SECTION -->
+        <section id="cat-pool" class="scroll-mt-36 bg-uber-grayBg rounded-3xl p-6 sm:p-10 border border-uber-border relative overflow-hidden">
+            <div class="absolute -right-8 -bottom-8 opacity-10 text-black text-9xl pointer-events-none">
+                <i class="fa-solid fa-8ball"></i>
+            </div>
+            <div class="max-w-3xl space-y-6">
+                <div>
+                    <span class="bg-uber-green text-black text-xs font-black uppercase px-3 py-1 rounded-full">Official Tournament</span>
+                    <h2 class="text-3xl font-black text-black mt-2">Mfura's Knockout Pool Tournament</h2>
+                    <p class="text-xs sm:text-sm text-uber-textMuted mt-1">
+                        Register your slot for the weekend pool tournament at Mfura's Tavern! Compete for the R1,500 grand prize.
+                    </p>
+                </div>
+
+                <form onsubmit="submitPoolRegistration(event)" class="bg-white p-6 rounded-2xl border border-uber-border shadow-xs space-y-4">
+                    <h3 class="font-extrabold text-base text-black flex items-center gap-2">
+                        <i class="fa-solid fa-trophy text-uber-green"></i> Player Registration Form (R50 Entry Fee)
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-black mb-1">Player Full Name *</label>
+                            <input type="text" id="pool-name" required placeholder="e.g. Ndora Rocket" class="w-full bg-uber-grayBg border border-uber-border rounded-xl px-3.5 py-2.5 text-xs text-black font-medium focus:outline-none focus:border-black">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-black mb-1">WhatsApp Phone Number *</label>
+                            <input type="tel" id="pool-phone" required placeholder="e.g. 082 345 7895" class="w-full bg-uber-grayBg border border-uber-border rounded-xl px-3.5 py-2.5 text-xs text-black font-medium focus:outline-none focus:border-black">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-black mb-1">Skill Category</label>
+                            <select id="pool-skill" class="w-full bg-uber-grayBg border border-uber-border rounded-xl px-3.5 py-2.5 text-xs text-black font-medium focus:outline-none focus:border-black">
+                                <option value="Casual / Beginner">Casual / Beginner</option>
+                                <option value="Intermediate Player">Intermediate Player</option>
+                                <option value="Kasi Pool Master">Kasi Pool Master</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-black mb-1">Payment Confirmation</label>
+                            <select id="pool-pay" class="w-full bg-uber-grayBg border border-uber-border rounded-xl px-3.5 py-2.5 text-xs text-black font-medium focus:outline-none focus:border-black">
+                                <option value="Pay R50 Cash on Arrival">Pay R50 Cash on Arrival</option>
+                                <option value="EFT R50 Advance Payment">EFT R50 Advance Payment</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full py-3.5 rounded-xl bg-black hover:bg-uber-green hover:text-black text-white font-black text-xs uppercase tracking-wider transition-all shadow-md flex items-center justify-center gap-2">
+                        <i class="fa-brands fa-whatsapp text-base text-uber-green"></i> Register Player via WhatsApp
+                    </button>
+                </form>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-black text-white py-10 border-t border-uber-border">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-gray-400">
+            <div class="flex items-center gap-2">
+                <span class="text-lg font-black text-white tracking-tight">Uber <span class="text-uber-green">Eats</span></span>
+                <span>• Mfura's Tavern Kasi Delica</span>
+            </div>
+            <p>793 Roma Street, Fourrooms location, Ilinge Township | WhatsApp Slip Desk: <strong class="text-white">060 942 6396</strong></p>
+            <p>&copy; <span id="footer-year"></span> Mfura's Tavern. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- MOBILE FLOATING CHECKOUT BAR -->
+    <div class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-uber-border p-3 shadow-xl">
+        <button onclick="toggleCartModal(true)" class="w-full py-3.5 rounded-xl bg-black text-white font-extrabold text-xs flex items-center justify-between px-5 shadow-lg">
+            <div class="flex items-center gap-2">
+                <span id="mob-cart-badge" class="bg-uber-green text-black text-[11px] font-black rounded-full h-5 px-2 flex items-center justify-center">0</span>
+                <span>View Order & Review</span>
+            </div>
+            <span id="mob-cart-total" class="text-uber-green font-black text-sm">R0.00</span>
+        </button>
+    </div>
+
+    <!-- CHECKOUT MODAL -->
+    <div id="cart-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex justify-end transition-opacity duration-300 opacity-0 pointer-events-none">
+        <div class="w-full max-w-lg bg-white h-full flex flex-col shadow-2xl border-l border-uber-border overflow-hidden">
+            <div class="p-5 border-b border-uber-border flex items-center justify-between bg-white">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-uber-lightGreen text-uber-darkGreen flex items-center justify-center text-lg">
+                        <i class="fa-solid fa-receipt"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-black text-black text-base">Order Review & Checkout</h3>
+                        <p class="text-xs text-uber-textMuted">Mfura's Tavern WhatsApp Slip Generator</p>
+                    </div>
+                </div>
+                <button onclick="toggleCartModal(false)" class="w-8 h-8 rounded-full bg-uber-grayBg text-black hover:bg-black hover:text-white flex items-center justify-center transition-all">
+                    <i class="fa-solid fa-xmark text-sm"></i>
+                </button>
+            </div>
+
+            <div class="flex-grow overflow-y-auto p-5 space-y-6">
+                <div>
+                    <div class="flex items-center justify-between mb-3">
+                        <h4 class="text-xs font-black uppercase tracking-wider text-uber-textMuted">1. Itemized Order Details</h4>
+                        <span id="cart-review-count" class="text-xs font-extrabold text-black">0 items</span>
+                    </div>
+                    <div id="cart-items-list" class="space-y-3"></div>
+                </div>
+
+                <div class="pt-4 border-t border-uber-border space-y-3">
+                    <h4 class="text-xs font-black uppercase tracking-wider text-uber-textMuted">2. Fulfillment & Delivery Details</h4>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button type="button" id="modal-opt-pickup" onclick="setModalOrderType('Pickup')" class="py-2.5 px-3 rounded-xl border border-black bg-black text-white text-xs font-bold transition-all flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-person-walking"></i> Pickup (Free)
+                        </button>
+                        <button type="button" id="modal-opt-delivery" onclick="setModalOrderType('Delivery')" class="py-2.5 px-3 rounded-xl border border-uber-border bg-uber-grayBg text-black text-xs font-bold transition-all flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-truck"></i> Delivery
+                        </button>
+                    </div>
+
+                    <div id="delivery-fields-container" class="hidden space-y-3 pt-2 bg-uber-grayBg p-4 rounded-2xl border border-uber-border">
+                        <div>
+                            <label class="block text-xs font-bold text-black mb-1">Select Delivery Area *</label>
+                            <select id="delivery-area-select" onchange="updateCartTotals()" class="w-full bg-white border border-uber-border rounded-xl px-3 py-2 text-xs font-bold text-black focus:outline-none focus:border-black">
+                                <option value="" data-fee="0">-- Select Area --</option>
+                                <option value="Fourrooms" data-fee="20">Fourrooms (R20 fee)</option>
+                                <option value="Jamestown" data-fee="20">Jamestown (R20 fee)</option>
+                                <option value="Cookhouse" data-fee="20">Cookhouse (R20 fee)</option>
+                                <option value="Zwide" data-fee="20">Zwide (R20 fee)</option>
+                                <option value="Vergonoeg" data-fee="30">Vergonoeg (R30 fee)</option>
+                                <option value="Kapa" data-fee="35">Kapa (R35 fee)</option>
+                                <option value="Maplangeni" data-fee="30">Maplangeni (R30 fee)</option>
+                                <option value="Tinarha" data-fee="35">Tinarha (R35 fee)</option>
+                                <option value="Mzamo" data-fee="30">Mzamo (R30 fee)</option>
+                                <option value="eZitandini" data-fee="30">eZitandini (R30 fee)</option>
+                                <option value="Site (magcwabeni)" data-fee="30">Site magcwabeni (R30 fee)</option>
+                                <option value="Site (Mgwevu)" data-fee="35">Site Mgwevu (R35 fee)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-black mb-1">Street Address & House No. *</label>
+                            <input type="text" id="cust-address" placeholder="e.g. 793 Roma Street, Fourrooms" class="w-full bg-white border border-uber-border rounded-xl px-3 py-2 text-xs font-medium text-black focus:outline-none focus:border-black">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-black mb-1">Delivery Time Slot *</label>
+                            <select id="delivery-time-select" onchange="updateCartTotals()" class="w-full bg-white border border-uber-border rounded-xl px-3 py-2 text-xs font-bold text-black focus:outline-none focus:border-black">
+                                <option value="11:00-12:00">11:00 - 12:00 Slot</option>
+                                <option value="14:00-15:00">14:00 - 15:00 Slot</option>
+                                <option value="17:00-18:00">17:00 - 18:00 Slot</option>
+                                <option value="20:00-23:00 (Late Night)">Late Night Delivery (20:00 - 23:00) (+R50 Fee)</option>
+                            </select>
+                            <p id="late-night-warning" class="text-[11px] font-semibold text-amber-600 mt-1 hidden">
+                                <i class="fa-solid fa-triangle-exclamation"></i> Late Night Delivery (R50 fee) is restricted to areas with standard fees of R20-R30.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t border-uber-border space-y-3">
+                    <h4 class="text-xs font-black uppercase tracking-wider text-uber-textMuted">3. Contact & Payment Option</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-bold text-black mb-1">Your Full Name *</label>
+                            <input type="text" id="cust-name" placeholder="e.g. Ndora M." class="w-full bg-uber-grayBg border border-uber-border rounded-xl px-3 py-2 text-xs font-medium text-black focus:outline-none focus:border-black">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-black mb-1">WhatsApp Phone Number *</label>
+                            <input type="tel" id="cust-phone" placeholder="e.g. 082 345 7895" class="w-full bg-uber-grayBg border border-uber-border rounded-xl px-3 py-2 text-xs font-medium text-black focus:outline-none focus:border-black">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2 pt-1">
+                        <label class="flex items-center justify-center p-2.5 rounded-xl border border-uber-border bg-uber-grayBg cursor-pointer text-xs font-bold text-black">
+                            <input type="radio" name="pay_method" value="Cash" checked onchange="toggleEftNotice(false)" class="accent-uber-green mr-2"> Cash Payment
+                        </label>
+                        <label class="flex items-center justify-center p-2.5 rounded-xl border border-uber-border bg-uber-grayBg cursor-pointer text-xs font-bold text-black">
+                            <input type="radio" name="pay_method" value="EFT" onchange="toggleEftNotice(true)" class="accent-uber-green mr-2"> EFT Transfer
+                        </label>
+                    </div>
+
+                    <div id="eft-disclaimer-box" class="hidden p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs space-y-1">
+                        <p class="font-extrabold flex items-center gap-1.5 text-amber-800">
+                            <i class="fa-solid fa-shield-halved"></i> EFT Disclaimer Notice:
+                        </p>
+                        <p class="text-[11px] leading-relaxed">
+                            Immediate payment is required. Please present or send Proof of Payment (POP) via WhatsApp to 0609426396 prior to order dispatch.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="p-5 border-t border-uber-border bg-uber-grayBg space-y-3">
+                <div class="space-y-1 text-xs">
+                    <div class="flex justify-between text-uber-textMuted">
+                        <span>Items Subtotal</span>
+                        <span id="summary-subtotal" class="font-bold text-black">R0.00</span>
+                    </div>
+                    <div class="flex justify-between text-uber-textMuted">
+                        <span>Delivery Fee</span>
+                        <span id="summary-delivery" class="font-bold text-black">R0.00</span>
+                    </div>
+                    <div class="flex justify-between text-base font-black text-black pt-2 border-t border-uber-border">
+                        <span>Total Due</span>
+                        <span id="summary-total" class="text-uber-green">R0.00</span>
+                    </div>
+                </div>
+
+                <button onclick="submitOrderToWhatsApp()" class="w-full py-4 rounded-xl bg-uber-green hover:bg-uber-darkGreen text-white font-black text-xs uppercase tracking-wider transition-all shadow-lg flex items-center justify-center gap-2">
+                    <i class="fa-brands fa-whatsapp text-lg"></i> Generate & Send Slip via WhatsApp
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- TAVERN CONTACT MODAL -->
+    <div id="contact-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 transition-opacity duration-300 opacity-0 pointer-events-none">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 space-y-5 shadow-2xl relative">
+            <button onclick="toggleContactModal(false)" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-uber-grayBg text-black flex items-center justify-center">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-2xl bg-uber-lightGreen text-uber-darkGreen flex items-center justify-center text-xl">
+                    <i class="fa-solid fa-phone"></i>
+                </div>
+                <div>
+                    <h3 class="font-black text-lg text-black">Mfura's Tavern Contacts</h3>
+                    <p class="text-xs text-uber-textMuted">Fourrooms location, Ilinge Township</p>
+                </div>
+            </div>
+
+            <div class="space-y-3 text-xs border-t border-b border-uber-border py-4">
+                <div class="flex items-center justify-between p-3 rounded-xl bg-uber-grayBg">
+                    <div>
+                        <p class="font-extrabold text-black">Mfura</p>
+                        <p class="text-uber-textMuted text-[11px]">Direct Management</p>
+                    </div>
+                    <a href="tel:0623456789" class="px-3 py-1.5 bg-black text-white font-bold rounded-lg text-[11px]">062 345 6789</a>
+                </div>
+                <div class="flex items-center justify-between p-3 rounded-xl bg-uber-grayBg">
+                    <div>
+                        <p class="font-extrabold text-black">Sikho</p>
+                        <p class="text-uber-textMuted text-[11px]">WhatsApp & Orders Desk</p>
+                    </div>
+                    <a href="tel:0609426396" class="px-3 py-1.5 bg-uber-green text-black font-bold rounded-lg text-[11px]">060 942 6396</a>
+                </div>
+                <div class="flex items-center justify-between p-3 rounded-xl bg-uber-grayBg">
+                    <div>
+                        <p class="font-extrabold text-black">Ndora</p>
+                        <p class="text-uber-textMuted text-[11px]">Pool & Events Desk</p>
+                    </div>
+                    <a href="tel:0823457895" class="px-3 py-1.5 bg-black text-white font-bold rounded-lg text-[11px]">082 345 7895</a>
+                </div>
+            </div>
+
+            <a href="https://maps.app.goo.gl/3i6N6sLU4X3Bt1tD7" target="_blank" rel="noopener noreferrer" class="w-full py-3 rounded-xl bg-black text-white font-bold text-xs flex items-center justify-center gap-2 text-center">
+                <i class="fa-solid fa-map-pin text-uber-green"></i> Open Address on Google Maps
+            </a>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT DATA DATASET MAPPED TO YOUR UPLOADED FILE NAMES -->
+    <script>
+        const menuData = {
+            ciders: [
+                { id: 'c1', name: 'Savanna Cider (6-Pack)', price: 156, desc: 'Dry Apple Cider 6-Pack Bottles', image: 'Savanna' },
+                { id: 'c2', name: 'Brutal Fruit (6-Pack)', price: 150, desc: 'Ruby Apple Spritzer 6-Pack Bottles', image: 'Brutal fruit' },
+                { id: 'c3', name: 'Bernini (6-Pack)', price: 150, desc: 'Sparkling Grape Drink 6-Pack Bottles', image: 'Bernini' }
+            ],
+            spirits: [
+                { id: 's1', name: 'Old Buck Gin', price: 185, desc: '750ml Original Dry Gin Bottle', image: 'Old buck' },
+                { id: 's2', name: 'Hennessy Cognac', price: 565, desc: '750ml Very Special Cognac Bottle', image: 'Hennesy' },
+                { id: 's3', name: 'Gordon\'s London Dry Gin', price: 200, desc: '750ml London Dry Gin Bottle', image: 'Gordons' }
+            ],
+            beers: [
+                { id: 'b1', name: 'Carling Black Label (6-Pack)', price: 136, desc: 'Champion Lager 6-Pack Bottles', image: 'Black label' },
+                { id: 'b2', name: 'Heineken Lager (6-Pack)', price: 150, desc: 'Premium Lager 6-Pack Bottles', image: 'heineken 2' },
+                { id: 'b3', name: 'Corona Extra (6-Pack)', price: 140, desc: 'Imported Lager 6-Pack Bottles', image: 'Corona' },
+                { id: 'q1', name: 'Black Label Quart (750ml)', price: 25, desc: '750ml Glass Quart Bottle', image: 'Black label' },
+                { id: 'q2', name: 'Heineken Quart (750ml)', price: 28, desc: '750ml Glass Quart Bottle', image: 'heineken' },
+                { id: 'q3', name: 'Castle Lite Quart (750ml)', price: 23, desc: '750ml Glass Quart Bottle', image: 'Castle Lite' }
+            ],
+            wine: [
+                { id: 'w1', name: 'Raindance Boxed Wine (5L)', price: 150, desc: '5 Litre Cask Wine', image: 'Bernini' },
+                { id: 'w2', name: '4th Street Sweet Wine', price: 155, desc: 'Boxed Wine', image: 'Bernini' },
+                { id: 'ex1', name: 'Fresh Ice Pack (2kg)', price: 35, desc: '2kg Bag of Chilled Ice Cubes', image: 'ice' }
+            ]
+        };
+
+        let cart = [];
+        let currentFulfillment = 'Delivery';
+
+        window.onload = function() {
+            renderDrinkCategories();
+            document.getElementById('footer-year').innerText = new Date().getFullYear();
+        };
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function setHeaderOrderType(type) {
+            currentFulfillment = type;
+            const btnDel = document.getElementById('header-btn-delivery');
+            const btnPic = document.getElementById('header-btn-pickup');
+
+            if (type === 'Delivery') {
+                btnDel.className = "px-4 py-1.5 rounded-full text-xs font-extrabold transition-all duration-200 bg-black text-white shadow-sm flex items-center gap-1.5";
+                btnPic.className = "px-4 py-1.5 rounded-full text-xs font-extrabold transition-all duration-200 text-uber-textMuted hover:text-black flex items-center gap-1.5";
+            } else {
+                btnPic.className = "px-4 py-1.5 rounded-full text-xs font-extrabold transition-all duration-200 bg-black text-white shadow-sm flex items-center gap-1.5";
+                btnDel.className = "px-4 py-1.5 rounded-full text-xs font-extrabold transition-all duration-200 text-uber-textMuted hover:text-black flex items-center gap-1.5";
+            }
+            setModalOrderType(type);
+        }
+
+        function setModalOrderType(type) {
+            currentFulfillment = type;
+            const btnPickup = document.getElementById('modal-opt-pickup');
+            const btnDelivery = document.getElementById('modal-opt-delivery');
+            const delFields = document.getElementById('delivery-fields-container');
+
+            if (type === 'Pickup') {
+                btnPickup.className = "py-2.5 px-3 rounded-xl border border-black bg-black text-white text-xs font-bold transition-all flex items-center justify-center gap-2";
+                btnDelivery.className = "py-2.5 px-3 rounded-xl border border-uber-border bg-uber-grayBg text-black text-xs font-bold transition-all flex items-center justify-center gap-2";
+                delFields.classList.add('hidden');
+            } else {
+                btnDelivery.className = "py-2.5 px-3 rounded-xl border border-black bg-black text-white text-xs font-bold transition-all flex items-center justify-center gap-2";
+                btnPickup.className = "py-2.5 px-3 rounded-xl border border-uber-border bg-uber-grayBg text-black text-xs font-bold transition-all flex items-center justify-center gap-2";
+                delFields.classList.remove('hidden');
+            }
+            updateCartTotals();
+        }
+
+        function renderDrinkCategories() {
+            renderGrid('ciders-container', menuData.ciders);
+            renderGrid('spirits-container', menuData.spirits);
+            renderGrid('beers-container', menuData.beers);
+            renderGrid('wine-container', menuData.wine);
+        }
+
+        function renderGrid(containerId, items) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            container.innerHTML = items.map(item => `
+                <div class="bg-white rounded-2xl border border-uber-border hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col justify-between">
+                    <div>
+                        <div class="h-40 bg-uber-grayBg relative overflow-hidden">
+                            <img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover">
+                            <span class="absolute top-3 right-3 bg-black text-white font-black text-xs px-2.5 py-1 rounded-md">R${item.price.toFixed(2)}</span>
+                        </div>
+                        <div class="p-4">
+                            <h4 class="font-extrabold text-black text-base">${item.name}</h4>
+                            <p class="text-xs text-uber-textMuted mt-1">${item.desc}</p>
+                        </div>
+                    </div>
+                    <div class="p-4 pt-0">
+                        <button onclick="addSimpleDrinkToCart('${item.id}', '${escapeQuotes(item.name)}', ${item.price}, '${item.image}')" class="w-full py-2.5 rounded-xl bg-uber-grayBg hover:bg-black hover:text-white border border-uber-border text-black font-extrabold text-xs transition-all flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-plus text-uber-green"></i> Add to Cart
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function escapeQuotes(str) {
+            return str.replace(/'/g, "\\'");
+        }
+
+        function addSimpleDrinkToCart(id, name, price, image) {
+            const existingIndex = cart.findIndex(item => item.id === id);
+            if (existingIndex > -1) {
+                cart[existingIndex].qty += 1;
+            } else {
+                cart.push({ id: id, name: name, price: price, qty: 1, image: image });
+            }
+            updateCartUI();
+            toggleCartModal(true);
+        }
+
+        function addMeatToCart(meatType, priceSelectId, prepRadioName, condCheckIds) {
+            const priceVal = parseFloat(document.getElementById(priceSelectId).value);
+            const prepValue = document.querySelector(`input[name="${prepRadioName}"]:checked`).value;
+            
+            const conds = [];
+            condCheckIds.forEach(id => {
+                const check = document.getElementById(id);
+                if (check && check.checked) {
+                    const label = id.split('_')[1];
+                    conds.push(label.charAt(0).toUpperCase() + label.slice(1));
+                }
+            });
+
+            const condStr = conds.length > 0 ? conds.join(', ') : 'No condiments';
+            const itemTitle = `${meatType} (${prepValue})`;
+            const itemKey = `meat_${meatType}_${priceVal}_${prepValue}_${conds.join('_')}`;
+            const meatImg = meatType === 'Beef' ? 'beef' : meatType === 'Pork' ? 'pork' : 'Wors';
+
+            const existingIndex = cart.findIndex(item => item.id === itemKey);
+            if (existingIndex > -1) {
+                cart[existingIndex].qty += 1;
+            } else {
+                cart.push({
+                    id: itemKey,
+                    name: itemTitle,
+                    details: `Portion R${priceVal.toFixed(2)} • Condiments: ${condStr}`,
+                    price: priceVal,
+                    qty: 1,
+                    image: meatImg
+                });
+            }
+
+            updateCartUI();
+            toggleCartModal(true);
+        }
+
+        function changeQty(id, delta) {
+            const index = cart.findIndex(item => item.id === id);
+            if (index > -1) {
+                cart[index].qty += delta;
+                if (cart[index].qty <= 0) {
+                    cart.splice(index, 1);
+                }
+            }
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const totalQty = cart.reduce((acc, item) => acc + item.qty, 0);
+            document.getElementById('cart-badge-count').innerText = totalQty;
+            document.getElementById('mob-cart-badge').innerText = totalQty;
+            document.getElementById('cart-review-count').innerText = `${totalQty} item${totalQty === 1 ? '' : 's'}`;
+
+            const container = document.getElementById('cart-items-list');
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-8 text-uber-textMuted text-xs">
+                        <i class="fa-solid fa-basket-shopping text-3xl mb-2 text-gray-300 block"></i>
+                        Your Uber Eats cart is empty. Add drinks or Chesanyama meat to start!
+                    </div>
+                `;
+            } else {
+                container.innerHTML = cart.map(item => `
+                    <div class="bg-uber-grayBg p-3.5 rounded-2xl border border-uber-border flex items-center justify-between gap-3 text-xs">
+                        <div class="flex items-center gap-3">
+                            ${item.image ? `<img src="${item.image}" class="w-12 h-12 rounded-xl object-cover shrink-0">` : ''}
+                            <div>
+                                <p class="font-extrabold text-black text-xs">${item.name}</p>
+                                ${item.details ? `<p class="text-[10px] text-uber-textMuted mt-0.5">${item.details}</p>` : ''}
+                                <p class="text-uber-darkGreen font-extrabold mt-1">R${(item.price * item.qty).toFixed(2)}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2 bg-white px-2 py-1 rounded-xl border border-uber-border shrink-0">
+                            <button onclick="changeQty('${item.id}', -1)" class="w-6 h-6 flex items-center justify-center text-black font-bold text-sm hover:bg-uber-grayBg rounded-md">-</button>
+                            <span class="font-extrabold text-black px-1.5 text-xs">${item.qty}</span>
+                            <button onclick="changeQty('${item.id}', 1)" class="w-6 h-6 flex items-center justify-center text-black font-bold text-sm hover:bg-uber-grayBg rounded-md">+</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            updateCartTotals();
+        }
+
+        function updateCartTotals() {
+            const itemsSubtotal = cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
+            let deliveryFee = 0;
+
+            if (currentFulfillment === 'Delivery') {
+                const areaSelect = document.getElementById('delivery-area-select');
+                const timeSelect = document.getElementById('delivery-time-select');
+                const selectedOpt = areaSelect.options[areaSelect.selectedIndex];
+                const baseFee = parseFloat(selectedOpt.getAttribute('data-fee') || 0);
+                const isLateNight = timeSelect.value.includes('20:00-23:00');
+                const warningEl = document.getElementById('late-night-warning');
+
+                if (isLateNight) {
+                    warningEl.classList.remove('hidden');
+                    deliveryFee = 50;
+                } else {
+                    warningEl.classList.add('hidden');
+                    deliveryFee = baseFee;
+                }
+            }
+
+            const grandTotal = itemsSubtotal + deliveryFee;
+            document.getElementById('summary-subtotal').innerText = `R${itemsSubtotal.toFixed(2)}`;
+            document.getElementById('summary-delivery').innerText = `R${deliveryFee.toFixed(2)}`;
+            document.getElementById('summary-total').innerText = `R${grandTotal.toFixed(2)}`;
+            document.getElementById('mob-cart-total').innerText = `R${grandTotal.toFixed(2)}`;
+        }
+
+        function toggleEftNotice(show) {
+            const box = document.getElementById('eft-disclaimer-box');
+            if (show) box.classList.remove('hidden');
+            else box.classList.add('hidden');
+        }
+
+        function toggleCartModal(open) {
+            const modal = document.getElementById('cart-modal');
+            if (open) modal.classList.remove('pointer-events-none', 'opacity-0');
+            else modal.classList.add('pointer-events-none', 'opacity-0');
+        }
+
+        function toggleContactModal(open) {
+            const modal = document.getElementById('contact-modal');
+            if (open) modal.classList.remove('pointer-events-none', 'opacity-0');
+            else modal.classList.add('pointer-events-none', 'opacity-0');
+        }
+
+        function handleMenuSearch() {
+            const query = document.getElementById('menu-search-input').value.toLowerCase();
+            const allCards = document.querySelectorAll('#cat-ciders .bg-white, #cat-spirits .bg-white, #cat-beers .bg-white, #cat-wine .bg-white');
+            allCards.forEach(card => {
+                card.style.display = card.innerText.toLowerCase().includes(query) ? "flex" : "none";
+            });
+        }
+
+        function submitOrderToWhatsApp() {
+            if (cart.length === 0) {
+                alert("Your cart is empty! Add items before placing an order.");
+                return;
+            }
+
+            const name = document.getElementById('cust-name').value.trim();
+            const phone = document.getElementById('cust-phone').value.trim();
+            const payMethod = document.querySelector('input[name="pay_method"]:checked').value;
+
+            if (!name || !phone) {
+                alert("Please fill in your Name and Phone Number.");
+                return;
+            }
+
+            let deliveryArea = '', address = '', timeSlot = '', deliveryFee = 0;
+            if (currentFulfillment === 'Delivery') {
+                const areaSelect = document.getElementById('delivery-area-select');
+                deliveryArea = areaSelect.options[areaSelect.selectedIndex].value;
+                deliveryFee = parseFloat(areaSelect.options[areaSelect.selectedIndex].getAttribute('data-fee') || 0);
+                address = document.getElementById('cust-address').value.trim();
+                timeSlot = document.getElementById('delivery-time-select').value;
+
+                if (!deliveryArea || !address) {
+                    alert("Please fill in your delivery area and address.");
+                    return;
+                }
+                if (timeSlot.includes('20:00-23:00')) deliveryFee = 50;
+            }
+
+            const subtotal = cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
+            const total = subtotal + deliveryFee;
+
+            let slip = `🛒 *MFURA'S TAVERN UBER EATS SLIP* 🛒\n\n`;
+            slip += `👤 *Customer:* ${name}\n📞 *Contact:* ${phone}\n📦 *Fulfillment:* ${currentFulfillment.toUpperCase()}\n`;
+            if (currentFulfillment === 'Delivery') {
+                slip += `📍 *Area:* ${deliveryArea}\n🏠 *Address:* ${address}\n⏰ *Slot:* ${timeSlot}\n`;
+            }
+            slip += `💳 *Payment:* ${payMethod}\n\n*--- ITEMS ---*\n`;
+            cart.forEach((item, i) => {
+                slip += `${i + 1}. *${item.name}* x${item.qty} = R${(item.price * item.qty).toFixed(2)}\n`;
+                if (item.details) slip += `   └ _${item.details}_\n`;
+            });
+            slip += `\nSubtotal: R${subtotal.toFixed(2)}\nDelivery: R${deliveryFee.toFixed(2)}\n*TOTAL DUE: R${total.toFixed(2)}*\n\n`;
+            if (payMethod === 'EFT') slip += `⚠️ *EFT Disclaimer:* Send POP via WhatsApp to 0609426396.\n\n`;
+            slip += `Thank you for ordering with Mfura's Tavern! 🍻`;
+
+            window.open(`https://wa.me/27609426396?text=${encodeURIComponent(slip)}`, '_blank');
+        }
+
+        function submitPoolRegistration(e) {
+            e.preventDefault();
+            const name = document.getElementById('pool-name').value.trim();
+            const phone = document.getElementById('pool-phone').value.trim();
+            const skill = document.getElementById('pool-skill').value;
+            const payStatus = document.getElementById('pool-pay').value;
+
+            let msg = `🎱 *MFURA'S POOL TOURNAMENT ENTRY* 🎱\n\n👤 *Player:* ${name}\n📞 *WhatsApp:* ${phone}\n🎯 *Skill:* ${skill}\n💳 *Payment:* ${payStatus} (R50.00)\n\nConfirm my slot!`;
+            window.open(`https://wa.me/27609426396?text=${encodeURIComponent(msg)}`, '_blank');
+        }
+    </script>
+</body>
+</html>
