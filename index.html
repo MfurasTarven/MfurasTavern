@@ -2,8 +2,8 @@
 <html lang="en" class="light scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mfura's Tavern | Braai South Africa</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mfura's Tavern | Braai & Drinks</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -35,10 +35,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        body {
+        html, body {
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
             background-color: #FFFFFF;
             color: #000000;
+            overflow-x: hidden;
+            touch-action: pan-x pan-y;
+            -webkit-text-size-adjust: 100%;
         }
         ::-webkit-scrollbar {
             width: 6px;
@@ -76,18 +79,33 @@
         </div>
         <div class="flex items-center gap-2 border-l border-gray-700 pl-4">
             <button onclick="toggleCartModal(true); hideToast();" class="px-3 py-1.5 bg-theme-green text-black font-extrabold text-xs rounded-xl hover:bg-theme-darkGreen hover:text-white transition-all">Review</button>
-            <button onclick="hideToast()" class="px-3 py-1.5 bg-gray-800 text-white font-bold text-xs rounded-xl hover:bg-gray-700 transition-all">Continue Order</button>
+            <button onclick="hideToast()" class="px-3 py-1.5 bg-gray-800 text-white font-bold text-xs rounded-xl hover:bg-gray-700 transition-all">Continue</button>
+        </div>
+    </div>
+
+    <!-- CUSTOM MESSAGE BOX (REPLACES ALERT) -->
+    <div id="message-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 transition-opacity duration-200 opacity-0 pointer-events-none">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-6 space-y-4 shadow-2xl border border-theme-border">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-theme-lightGreen text-theme-darkGreen flex items-center justify-center text-lg shrink-0">
+                    <i class="fa-solid fa-circle-info"></i>
+                </div>
+                <h3 class="font-black text-base text-black">Notice</h3>
+            </div>
+            <p id="message-modal-text" class="text-xs text-theme-textMuted leading-relaxed"></p>
+            <button onclick="hideMessageModal()" class="w-full py-2.5 rounded-xl bg-black text-white font-bold text-xs hover:bg-theme-green hover:text-black transition-all">OK</button>
         </div>
     </div>
 
     <!-- TOP STICKY HEADER -->
     <header class="sticky top-0 z-40 bg-white border-b border-theme-border shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-20 gap-4">
+            <div class="flex items-center justify-between h-20 gap-3">
                 
-                <div class="flex items-center gap-4 cursor-pointer" onclick="scrollToTop()">
+                <!-- Brand Name: Mfura's -->
+                <div class="flex items-center gap-3 cursor-pointer shrink-0" onclick="scrollToTop()">
                     <div class="flex items-center gap-1.5 font-black text-xl sm:text-2xl tracking-tighter">
-                        <span class="text-black">Braai</span>
+                        <span class="text-black">Mfura's</span>
                     </div>
                     <div class="h-6 w-px bg-theme-border hidden sm:block"></div>
                     <div class="hidden sm:flex flex-col">
@@ -98,18 +116,21 @@
                     </div>
                 </div>
 
-                <!-- Non-interactive info badge instead of toggle buttons -->
-                <div class="hidden md:flex items-center bg-theme-grayBg px-4 py-2 rounded-full border border-theme-border text-xs font-bold text-black gap-2">
-                    <i class="fa-solid fa-store text-theme-green"></i> <span>Tavern Dine-In, Delivery & Pickup Available</span>
+                <!-- Non-interactive Delivery & Pickup Info -->
+                <div class="hidden lg:flex items-center bg-theme-grayBg px-4 py-2 rounded-full border border-theme-border text-xs font-bold text-black gap-3 select-none">
+                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-truck text-theme-green"></i> Delivery</span>
+                    <span class="text-gray-300">|</span>
+                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-person-walking text-theme-green"></i> Pickup (Free)</span>
                 </div>
 
-                <div class="flex items-center gap-3">
-                    <div class="relative w-40 sm:w-48 lg:w-64">
+                <!-- Live Search & Checkout Button -->
+                <div class="flex items-center gap-2 sm:gap-3 flex-grow sm:flex-grow-0 justify-end">
+                    <div class="relative w-full max-w-[180px] sm:max-w-[220px] lg:w-64">
                         <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-theme-textMuted text-xs"></i>
-                        <input type="text" id="menu-search-input" onkeyup="handleMenuSearch()" placeholder="Search Mfura's menu..." class="w-full bg-theme-grayBg border border-transparent focus:border-black rounded-full pl-9 pr-4 py-2 text-xs font-medium text-black focus:outline-none transition-all">
+                        <input type="text" id="menu-search-input" onkeyup="handleMenuSearch()" placeholder="Search menu..." class="w-full bg-theme-grayBg border border-transparent focus:border-black rounded-full pl-9 pr-4 py-2 text-xs font-medium text-black focus:outline-none transition-all">
                     </div>
 
-                    <button onclick="toggleCartModal(true)" class="relative bg-black hover:bg-theme-darkGreen text-white px-4 py-2.5 rounded-full font-bold text-xs transition-all flex items-center gap-2.5 shadow-md shrink-0">
+                    <button onclick="toggleCartModal(true)" class="relative bg-black hover:bg-theme-darkGreen text-white px-3.5 sm:px-4 py-2.5 rounded-full font-bold text-xs transition-all flex items-center gap-2 shadow-md shrink-0">
                         <i class="fa-solid fa-basket-shopping text-sm text-theme-green"></i>
                         <span class="hidden sm:inline">Checkout</span>
                         <span id="cart-badge-count" class="bg-theme-green text-black text-[11px] font-black rounded-full h-5 px-1.5 flex items-center justify-center">0</span>
@@ -120,29 +141,28 @@
         </div>
     </header>
 
-    <!-- STORE HERO BANNER -->
+    <!-- STORE HERO BANNER (Scrolls away naturally, unobstructed logo image) -->
     <section class="bg-white border-b border-theme-border">
-        <div class="h-48 sm:h-64 lg:h-72 w-full bg-slate-900 relative overflow-hidden">
-            <img src="Mfura’s Suggest logo.png" alt="Mfura's Tavern Logo" class="w-full h-full object-cover opacity-65" onerror="this.src='https://placehold.co/1200x400/000000/06C167?text=Mfura+Tavern'">
-            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+        <div class="h-52 sm:h-72 lg:h-80 w-full bg-slate-900 relative overflow-hidden">
+            <img src="Mfura’s Suggest logo.png" alt="Mfura's Tavern Logo" class="w-full h-full object-contain sm:object-cover" onerror="this.src='https://placehold.co/1200x400/000000/06C167?text=Mfura+Tavern'">
+            <div class="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/75 to-transparent pointer-events-none"></div>
             
-            <div class="absolute bottom-4 left-4 right-4 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-white flex justify-between items-end">
+            <div class="absolute bottom-3 left-4 right-4 max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 text-white flex justify-between items-end pointer-events-none">
                 <div>
-                    <span class="bg-theme-green text-black text-[10px] font-black uppercase px-2.5 py-1 rounded-md tracking-wider">Official Braai Spot</span>
-                    <h1 class="text-2xl sm:text-4xl font-black tracking-tight mt-1">Mfura's Tavern</h1>
-                    <p class="text-xs sm:text-sm text-gray-200 mt-0.5">Braai Meat, Ice Cold Beers, Ciders, Spirits & Pool Tournaments.</p>
+                    <h1 class="text-base sm:text-xl font-black tracking-tight">Mfura's Tavern</h1>
+                    <p class="text-[11px] sm:text-xs text-gray-200">Braai Meat, Ice Cold Beers, Ciders, Spirits & Pool</p>
                 </div>
             </div>
         </div>
 
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <div class="flex flex-wrap items-center justify-between gap-4 text-xs font-semibold">
-                <div class="flex flex-wrap items-center gap-4 text-theme-textDark">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5">
+            <div class="flex flex-wrap items-center justify-between gap-3 text-xs font-semibold">
+                <div class="flex flex-wrap items-center gap-3 sm:gap-4 text-theme-textDark">
                     <div class="flex items-center gap-1.5 bg-theme-lightGreen px-2.5 py-1 rounded-full text-theme-darkGreen font-extrabold">
                         <i class="fa-solid fa-star text-xs"></i> 4.8 <span class="text-theme-textMuted font-normal text-[11px]">(200+ ratings)</span>
                     </div>
                     <div class="flex items-center gap-1.5 text-theme-textMuted">
-                        <i class="fa-regular fa-clock"></i> Open Daily: <strong class="text-black">11:00 AM – Late</strong>
+                        <i class="fa-regular fa-clock text-black"></i> Open: <strong class="text-black">11:00 AM – Late</strong>
                     </div>
                     <div class="flex items-center gap-1.5 text-theme-textMuted">
                         <i class="fa-solid fa-location-dot text-theme-green"></i> 793 Roma Street, Fourrooms, Ilinge
@@ -151,7 +171,7 @@
 
                 <div class="flex items-center gap-2">
                     <a href="https://maps.app.goo.gl/3i6N6sLU4X3Bt1tD7" target="_blank" rel="noopener noreferrer" class="px-3.5 py-1.5 rounded-full border border-theme-border bg-theme-grayBg hover:bg-black hover:text-white transition-all text-[11px] font-bold text-black flex items-center gap-1.5">
-                        <i class="fa-solid fa-map-location-dot text-theme-green"></i> Google Maps Pin
+                        <i class="fa-solid fa-map-location-dot text-theme-green"></i> Google Maps
                     </a>
                     <button onclick="toggleContactModal(true)" class="px-3.5 py-1.5 rounded-full border border-theme-border bg-theme-grayBg hover:bg-black hover:text-white transition-all text-[11px] font-bold text-black flex items-center gap-1.5">
                         <i class="fa-solid fa-phone text-theme-green"></i> Tavern Contacts
@@ -161,44 +181,58 @@
         </div>
     </section>
 
-    <!-- STICKY CATEGORY NAV -->
-    <div class="sticky top-20 z-30 bg-white/95 backdrop-blur-md border-b border-theme-border py-3 shadow-xs">
+    <!-- CATEGORY NAV RIBBON (Not sticky so it hides when scrolling down like the logo pic) -->
+    <div class="bg-white border-b border-theme-border py-3">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center space-x-2 overflow-x-auto hide-scrollbar text-xs font-bold">
-                <a href="#cat-meat" class="cat-pill bg-black text-white px-4 py-2 rounded-full whitespace-nowrap transition-all">🔥 Braai Meat</a>
-                <a href="#cat-ciders" class="cat-pill bg-theme-grayBg hover:bg-theme-lightGray text-black px-4 py-2 rounded-full whitespace-nowrap transition-all">🍏 Ciders (6-Packs)</a>
-                <a href="#cat-spirits" class="cat-pill bg-theme-grayBg hover:bg-theme-lightGray text-black px-4 py-2 rounded-full whitespace-nowrap transition-all">🥃 Shots & Spirits</a>
-                <a href="#cat-beers" class="cat-pill bg-theme-grayBg hover:bg-theme-lightGray text-black px-4 py-2 rounded-full whitespace-nowrap transition-all">🍺 Beers & Quarts</a>
-                <a href="#cat-wine" class="cat-pill bg-theme-grayBg hover:bg-theme-lightGray text-black px-4 py-2 rounded-full whitespace-nowrap transition-all">🍷 Wine & Extras</a>
-                <a href="#cat-pool" class="cat-pill bg-theme-lightGreen text-theme-darkGreen border border-theme-green/30 px-4 py-2 rounded-full whitespace-nowrap transition-all">🎱 This Week's Announcement</a>
-                <a href="#cat-gallery" class="cat-pill bg-theme-grayBg hover:bg-theme-lightGray text-black px-4 py-2 rounded-full whitespace-nowrap transition-all">📸 Tavern Gallery</a>
+                <a href="#cat-meat" class="cat-pill bg-black text-white px-4 py-2 rounded-full whitespace-nowrap transition-all flex items-center gap-1.5">
+                    <i class="fa-solid fa-fire-flame-curved text-theme-green"></i> Braai Meat
+                </a>
+                <a href="#cat-ciders" class="cat-pill bg-theme-grayBg hover:bg-theme-lightGray text-black px-4 py-2 rounded-full whitespace-nowrap transition-all flex items-center gap-1.5">
+                    <i class="fa-solid fa-bottle-droplet text-theme-green"></i> Ciders (6-Packs)
+                </a>
+                <a href="#cat-spirits" class="cat-pill bg-theme-grayBg hover:bg-theme-lightGray text-black px-4 py-2 rounded-full whitespace-nowrap transition-all flex items-center gap-1.5">
+                    <i class="fa-solid fa-whiskey-glass text-theme-green"></i> Shots & Spirits
+                </a>
+                <a href="#cat-beers" class="cat-pill bg-theme-grayBg hover:bg-theme-lightGray text-black px-4 py-2 rounded-full whitespace-nowrap transition-all flex items-center gap-1.5">
+                    <i class="fa-solid fa-beer-mug-empty text-theme-green"></i> Beers & Quarts
+                </a>
+                <a href="#cat-wine" class="cat-pill bg-theme-grayBg hover:bg-theme-lightGray text-black px-4 py-2 rounded-full whitespace-nowrap transition-all flex items-center gap-1.5">
+                    <i class="fa-solid fa-wine-glass text-theme-green"></i> Wine & Extras
+                </a>
+                <a href="#cat-pool" class="cat-pill bg-theme-lightGreen text-theme-darkGreen border border-theme-green/30 px-4 py-2 rounded-full whitespace-nowrap transition-all flex items-center gap-1.5">
+                    <i class="fa-solid fa-trophy text-theme-darkGreen"></i> This Week's Announcement
+                </a>
+                <a href="#cat-gallery" class="cat-pill bg-theme-grayBg hover:bg-theme-lightGray text-black px-4 py-2 rounded-full whitespace-nowrap transition-all flex items-center gap-1.5">
+                    <i class="fa-solid fa-camera text-theme-green"></i> Gallery
+                </a>
             </div>
         </div>
     </div>
 
     <!-- MAIN MENU CONTENT -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow space-y-12">
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow space-y-12 w-full">
 
         <!-- CATEGORY 1: MEAT SECTION (BRAAI) -->
-        <section id="cat-meat" class="scroll-mt-36">
+        <section id="cat-meat" class="scroll-mt-24">
             <div class="flex items-center justify-between border-b border-theme-border pb-3 mb-6">
                 <div>
-                    <h2 class="text-2xl font-black text-black flex items-center gap-2">
-                        🔥 Braai Meat Selection
+                    <h2 class="text-xl sm:text-2xl font-black text-black flex items-center gap-2">
+                        <i class="fa-solid fa-fire-flame-curved text-theme-green"></i> Braai Meat Selection
                     </h2>
-                    <p class="text-xs text-theme-textMuted mt-0.5">Customize your order with Beef (R50-R550), Pork (R20-R550), or Sausage (R20-R550).</p>
+                    <p class="text-xs text-theme-textMuted mt-0.5">Beef (R50 - R550), Pork (R20 - R550), and Sausage (R20 - R550).</p>
                 </div>
-                <span class="text-xs font-extrabold bg-theme-lightGreen text-theme-darkGreen px-3 py-1 rounded-full border border-theme-green/30">Fresh off the Braai</span>
+                <span class="text-xs font-extrabold bg-theme-lightGreen text-theme-darkGreen px-3 py-1 rounded-full border border-theme-green/30 hidden sm:inline-block">Fresh off the Braai</span>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 
                 <!-- Beef Card -->
-                <div class="bg-white rounded-2xl border border-theme-border hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col justify-between">
+                <div class="menu-item-card bg-white rounded-2xl border border-theme-border hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col justify-between" data-name="beef">
                     <div>
                         <div class="h-44 bg-theme-grayBg relative overflow-hidden">
-                            <img src="beef.jpeg" alt="Beef Braai" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/600x400/000000/06C167?text=Beef+Steak'">
-                            <span class="absolute top-3 left-3 bg-black text-white text-[11px] font-black px-2.5 py-1 rounded-md">Custom Price R50 - R550</span>
+                            <img src="beef.jpeg" alt="Beef" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/600x400/000000/06C167?text=Beef'">
+                            <span class="absolute top-3 left-3 bg-black text-white text-[11px] font-black px-2.5 py-1 rounded-md">R50 - R550</span>
                         </div>
                         <div class="p-5 space-y-4">
                             <div>
@@ -208,49 +242,52 @@
                             <div class="space-y-3 pt-3 border-t border-theme-border text-xs">
                                 <div>
                                     <label class="block font-bold text-black mb-1">Enter Price (R50 - R550):</label>
-                                    <input type="number" id="beef_price" min="50" max="550" value="50" class="w-full bg-theme-grayBg border border-theme-border rounded-xl px-3.5 py-2.5 text-xs font-bold text-black focus:outline-none focus:border-black" placeholder="Enter amount">
+                                    <input type="number" id="beef_price" min="50" max="550" value="50" onchange="refreshMeatActionUI('Beef')" onkeyup="refreshMeatActionUI('Beef')" class="w-full bg-theme-grayBg border border-theme-border rounded-xl px-3.5 py-2.5 text-xs font-bold text-black focus:outline-none focus:border-black" placeholder="Enter amount">
                                 </div>
                                 <div>
                                     <label class="block font-bold text-black mb-1">Preparation Style:</label>
                                     <div class="grid grid-cols-2 gap-2">
                                         <label class="flex items-center justify-center p-2 rounded-xl border border-theme-border bg-theme-grayBg cursor-pointer hover:border-black text-xs font-bold text-black">
-                                            <input type="radio" name="beef_prep" value="Braai" checked class="accent-theme-green mr-1.5"> Braai
+                                            <input type="radio" name="beef_prep" value="Braai" checked onchange="refreshMeatActionUI('Beef')" class="accent-black mr-1.5"> Braai
                                         </label>
                                         <label class="flex items-center justify-center p-2 rounded-xl border border-theme-border bg-theme-grayBg cursor-pointer hover:border-black text-xs font-bold text-black">
-                                            <input type="radio" name="beef_prep" value="Raw" class="accent-theme-green mr-1.5"> Raw
+                                            <input type="radio" name="beef_prep" value="Raw" onchange="refreshMeatActionUI('Beef')" class="accent-black mr-1.5"> Raw
                                         </label>
                                     </div>
                                 </div>
                                 <div>
-                                    <label class="block font-bold text-black mb-1">Condiments (Included):</label>
+                                    <label class="block font-bold text-black mb-1.5">Condiments (Click to select):</label>
                                     <div class="flex flex-wrap gap-2">
-                                        <label class="inline-flex items-center bg-theme-grayBg px-2.5 py-1 rounded-lg border border-theme-border text-black text-[11px] font-semibold">
-                                            <input type="checkbox" id="beef_spice" checked class="accent-theme-green mr-1.5"> Spice
+                                        <label id="lbl_beef_spice" class="inline-flex items-center bg-theme-grayBg text-black border border-theme-border px-3 py-1.5 rounded-lg text-[11px] font-bold cursor-pointer transition-all select-none">
+                                            <input type="checkbox" id="beef_spice" onchange="toggleCondimentHighlight(this, 'lbl_beef_spice'); refreshMeatActionUI('Beef')" class="sr-only">
+                                            <i class="fa-solid fa-check mr-1.5 text-[10px] hidden"></i> Spice
                                         </label>
-                                        <label class="inline-flex items-center bg-theme-grayBg px-2.5 py-1 rounded-lg border border-theme-border text-black text-[11px] font-semibold">
-                                            <input type="checkbox" id="beef_salt" checked class="accent-theme-green mr-1.5"> Salt
+                                        <label id="lbl_beef_salt" class="inline-flex items-center bg-theme-grayBg text-black border border-theme-border px-3 py-1.5 rounded-lg text-[11px] font-bold cursor-pointer transition-all select-none">
+                                            <input type="checkbox" id="beef_salt" onchange="toggleCondimentHighlight(this, 'lbl_beef_salt'); refreshMeatActionUI('Beef')" class="sr-only">
+                                            <i class="fa-solid fa-check mr-1.5 text-[10px] hidden"></i> Salt
                                         </label>
-                                        <label class="inline-flex items-center bg-theme-grayBg px-2.5 py-1 rounded-lg border border-theme-border text-black text-[11px] font-semibold">
-                                            <input type="checkbox" id="beef_sauce" checked class="accent-theme-green mr-1.5"> Sauce
+                                        <label id="lbl_beef_sauce" class="inline-flex items-center bg-theme-grayBg text-black border border-theme-border px-3 py-1.5 rounded-lg text-[11px] font-bold cursor-pointer transition-all select-none">
+                                            <input type="checkbox" id="beef_sauce" onchange="toggleCondimentHighlight(this, 'lbl_beef_sauce'); refreshMeatActionUI('Beef')" class="sr-only">
+                                            <i class="fa-solid fa-check mr-1.5 text-[10px] hidden"></i> Sauce
                                         </label>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="p-5 pt-0">
-                        <button onclick="addMeatToCart('Beef', 'beef_price', 'beef_prep', ['beef_spice', 'beef_salt', 'beef_sauce'])" class="w-full py-3 rounded-xl bg-theme-green hover:bg-theme-darkGreen text-white font-black text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-md">
+                    <div class="p-5 pt-0" id="beef-action-container">
+                        <button onclick="addMeatToCart('Beef')" class="w-full py-3 rounded-xl bg-theme-green hover:bg-theme-darkGreen text-white font-black text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-md">
                             <i class="fa-solid fa-plus"></i> Add Beef to Order
                         </button>
                     </div>
                 </div>
 
                 <!-- Pork Card (Starts at R20) -->
-                <div class="bg-white rounded-2xl border border-theme-border hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col justify-between">
+                <div class="menu-item-card bg-white rounded-2xl border border-theme-border hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col justify-between" data-name="pork">
                     <div>
                         <div class="h-44 bg-theme-grayBg relative overflow-hidden">
-                            <img src="pork.jpeg" alt="Pork Chops" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/600x400/000000/06C167?text=Pork+Chops'">
-                            <span class="absolute top-3 left-3 bg-black text-white text-[11px] font-black px-2.5 py-1 rounded-md">Custom Price R20 - R550</span>
+                            <img src="pork.jpeg" alt="Pork" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/600x400/000000/06C167?text=Pork'">
+                            <span class="absolute top-3 left-3 bg-black text-white text-[11px] font-black px-2.5 py-1 rounded-md">R20 - R550</span>
                         </div>
                         <div class="p-5 space-y-4">
                             <div>
@@ -260,49 +297,52 @@
                             <div class="space-y-3 pt-3 border-t border-theme-border text-xs">
                                 <div>
                                     <label class="block font-bold text-black mb-1">Enter Price (R20 - R550):</label>
-                                    <input type="number" id="pork_price" min="20" max="550" value="20" class="w-full bg-theme-grayBg border border-theme-border rounded-xl px-3.5 py-2.5 text-xs font-bold text-black focus:outline-none focus:border-black" placeholder="Enter amount">
+                                    <input type="number" id="pork_price" min="20" max="550" value="20" onchange="refreshMeatActionUI('Pork')" onkeyup="refreshMeatActionUI('Pork')" class="w-full bg-theme-grayBg border border-theme-border rounded-xl px-3.5 py-2.5 text-xs font-bold text-black focus:outline-none focus:border-black" placeholder="Enter amount">
                                 </div>
                                 <div>
                                     <label class="block font-bold text-black mb-1">Preparation Style:</label>
                                     <div class="grid grid-cols-2 gap-2">
                                         <label class="flex items-center justify-center p-2 rounded-xl border border-theme-border bg-theme-grayBg cursor-pointer hover:border-black text-xs font-bold text-black">
-                                            <input type="radio" name="pork_prep" value="Braai" checked class="accent-theme-green mr-1.5"> Braai
+                                            <input type="radio" name="pork_prep" value="Braai" checked onchange="refreshMeatActionUI('Pork')" class="accent-black mr-1.5"> Braai
                                         </label>
                                         <label class="flex items-center justify-center p-2 rounded-xl border border-theme-border bg-theme-grayBg cursor-pointer hover:border-black text-xs font-bold text-black">
-                                            <input type="radio" name="pork_prep" value="Raw" class="accent-theme-green mr-1.5"> Raw
+                                            <input type="radio" name="pork_prep" value="Raw" onchange="refreshMeatActionUI('Pork')" class="accent-black mr-1.5"> Raw
                                         </label>
                                     </div>
                                 </div>
                                 <div>
-                                    <label class="block font-bold text-black mb-1">Condiments (Included):</label>
+                                    <label class="block font-bold text-black mb-1.5">Condiments (Click to select):</label>
                                     <div class="flex flex-wrap gap-2">
-                                        <label class="inline-flex items-center bg-theme-grayBg px-2.5 py-1 rounded-lg border border-theme-border text-black text-[11px] font-semibold">
-                                            <input type="checkbox" id="pork_spice" checked class="accent-theme-green mr-1.5"> Spice
+                                        <label id="lbl_pork_spice" class="inline-flex items-center bg-theme-grayBg text-black border border-theme-border px-3 py-1.5 rounded-lg text-[11px] font-bold cursor-pointer transition-all select-none">
+                                            <input type="checkbox" id="pork_spice" onchange="toggleCondimentHighlight(this, 'lbl_pork_spice'); refreshMeatActionUI('Pork')" class="sr-only">
+                                            <i class="fa-solid fa-check mr-1.5 text-[10px] hidden"></i> Spice
                                         </label>
-                                        <label class="inline-flex items-center bg-theme-grayBg px-2.5 py-1 rounded-lg border border-theme-border text-black text-[11px] font-semibold">
-                                            <input type="checkbox" id="pork_salt" checked class="accent-theme-green mr-1.5"> Salt
+                                        <label id="lbl_pork_salt" class="inline-flex items-center bg-theme-grayBg text-black border border-theme-border px-3 py-1.5 rounded-lg text-[11px] font-bold cursor-pointer transition-all select-none">
+                                            <input type="checkbox" id="pork_salt" onchange="toggleCondimentHighlight(this, 'lbl_pork_salt'); refreshMeatActionUI('Pork')" class="sr-only">
+                                            <i class="fa-solid fa-check mr-1.5 text-[10px] hidden"></i> Salt
                                         </label>
-                                        <label class="inline-flex items-center bg-theme-grayBg px-2.5 py-1 rounded-lg border border-theme-border text-black text-[11px] font-semibold">
-                                            <input type="checkbox" id="pork_sauce" checked class="accent-theme-green mr-1.5"> Sauce
+                                        <label id="lbl_pork_sauce" class="inline-flex items-center bg-theme-grayBg text-black border border-theme-border px-3 py-1.5 rounded-lg text-[11px] font-bold cursor-pointer transition-all select-none">
+                                            <input type="checkbox" id="pork_sauce" onchange="toggleCondimentHighlight(this, 'lbl_pork_sauce'); refreshMeatActionUI('Pork')" class="sr-only">
+                                            <i class="fa-solid fa-check mr-1.5 text-[10px] hidden"></i> Sauce
                                         </label>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="p-5 pt-0">
-                        <button onclick="addMeatToCart('Pork', 'pork_price', 'pork_prep', ['pork_spice', 'pork_salt', 'pork_sauce'])" class="w-full py-3 rounded-xl bg-theme-green hover:bg-theme-darkGreen text-white font-black text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-md">
+                    <div class="p-5 pt-0" id="pork-action-container">
+                        <button onclick="addMeatToCart('Pork')" class="w-full py-3 rounded-xl bg-theme-green hover:bg-theme-darkGreen text-white font-black text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-md">
                             <i class="fa-solid fa-plus"></i> Add Pork to Order
                         </button>
                     </div>
                 </div>
 
                 <!-- Sausage Card (Starts at R20) -->
-                <div class="bg-white rounded-2xl border border-theme-border hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col justify-between">
+                <div class="menu-item-card bg-white rounded-2xl border border-theme-border hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col justify-between" data-name="sausage">
                     <div>
                         <div class="h-44 bg-theme-grayBg relative overflow-hidden">
-                            <img src="Wors.jpeg" alt="Sausage Wors" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/600x400/000000/06C167?text=Sausage'">
-                            <span class="absolute top-3 left-3 bg-black text-white text-[11px] font-black px-2.5 py-1 rounded-md">Custom Price R20 - R550</span>
+                            <img src="Wors.jpeg" alt="Sausage" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/600x400/000000/06C167?text=Sausage'">
+                            <span class="absolute top-3 left-3 bg-black text-white text-[11px] font-black px-2.5 py-1 rounded-md">R20 - R550</span>
                         </div>
                         <div class="p-5 space-y-4">
                             <div>
@@ -312,38 +352,41 @@
                             <div class="space-y-3 pt-3 border-t border-theme-border text-xs">
                                 <div>
                                     <label class="block font-bold text-black mb-1">Enter Price (R20 - R550):</label>
-                                    <input type="number" id="sausage_price" min="20" max="550" value="20" class="w-full bg-theme-grayBg border border-theme-border rounded-xl px-3.5 py-2.5 text-xs font-bold text-black focus:outline-none focus:border-black" placeholder="Enter amount">
+                                    <input type="number" id="sausage_price" min="20" max="550" value="20" onchange="refreshMeatActionUI('Sausage')" onkeyup="refreshMeatActionUI('Sausage')" class="w-full bg-theme-grayBg border border-theme-border rounded-xl px-3.5 py-2.5 text-xs font-bold text-black focus:outline-none focus:border-black" placeholder="Enter amount">
                                 </div>
                                 <div>
                                     <label class="block font-bold text-black mb-1">Preparation Style:</label>
                                     <div class="grid grid-cols-2 gap-2">
                                         <label class="flex items-center justify-center p-2 rounded-xl border border-theme-border bg-theme-grayBg cursor-pointer hover:border-black text-xs font-bold text-black">
-                                            <input type="radio" name="sausage_prep" value="Braai" checked class="accent-theme-green mr-1.5"> Braai
+                                            <input type="radio" name="sausage_prep" value="Braai" checked onchange="refreshMeatActionUI('Sausage')" class="accent-black mr-1.5"> Braai
                                         </label>
                                         <label class="flex items-center justify-center p-2 rounded-xl border border-theme-border bg-theme-grayBg cursor-pointer hover:border-black text-xs font-bold text-black">
-                                            <input type="radio" name="sausage_prep" value="Raw" class="accent-theme-green mr-1.5"> Raw
+                                            <input type="radio" name="sausage_prep" value="Raw" onchange="refreshMeatActionUI('Sausage')" class="accent-black mr-1.5"> Raw
                                         </label>
                                     </div>
                                 </div>
                                 <div>
-                                    <label class="block font-bold text-black mb-1">Condiments (Included):</label>
+                                    <label class="block font-bold text-black mb-1.5">Condiments (Click to select):</label>
                                     <div class="flex flex-wrap gap-2">
-                                        <label class="inline-flex items-center bg-theme-grayBg px-2.5 py-1 rounded-lg border border-theme-border text-black text-[11px] font-semibold">
-                                            <input type="checkbox" id="sausage_spice" checked class="accent-theme-green mr-1.5"> Spice
+                                        <label id="lbl_sausage_spice" class="inline-flex items-center bg-theme-grayBg text-black border border-theme-border px-3 py-1.5 rounded-lg text-[11px] font-bold cursor-pointer transition-all select-none">
+                                            <input type="checkbox" id="sausage_spice" onchange="toggleCondimentHighlight(this, 'lbl_sausage_spice'); refreshMeatActionUI('Sausage')" class="sr-only">
+                                            <i class="fa-solid fa-check mr-1.5 text-[10px] hidden"></i> Spice
                                         </label>
-                                        <label class="inline-flex items-center bg-theme-grayBg px-2.5 py-1 rounded-lg border border-theme-border text-black text-[11px] font-semibold">
-                                            <input type="checkbox" id="sausage_salt" checked class="accent-theme-green mr-1.5"> Salt
+                                        <label id="lbl_sausage_salt" class="inline-flex items-center bg-theme-grayBg text-black border border-theme-border px-3 py-1.5 rounded-lg text-[11px] font-bold cursor-pointer transition-all select-none">
+                                            <input type="checkbox" id="sausage_salt" onchange="toggleCondimentHighlight(this, 'lbl_sausage_salt'); refreshMeatActionUI('Sausage')" class="sr-only">
+                                            <i class="fa-solid fa-check mr-1.5 text-[10px] hidden"></i> Salt
                                         </label>
-                                        <label class="inline-flex items-center bg-theme-grayBg px-2.5 py-1 rounded-lg border border-theme-border text-black text-[11px] font-semibold">
-                                            <input type="checkbox" id="sausage_sauce" checked class="accent-theme-green mr-1.5"> Sauce
+                                        <label id="lbl_sausage_sauce" class="inline-flex items-center bg-theme-grayBg text-black border border-theme-border px-3 py-1.5 rounded-lg text-[11px] font-bold cursor-pointer transition-all select-none">
+                                            <input type="checkbox" id="sausage_sauce" onchange="toggleCondimentHighlight(this, 'lbl_sausage_sauce'); refreshMeatActionUI('Sausage')" class="sr-only">
+                                            <i class="fa-solid fa-check mr-1.5 text-[10px] hidden"></i> Sauce
                                         </label>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="p-5 pt-0">
-                        <button onclick="addMeatToCart('Sausage', 'sausage_price', 'sausage_prep', ['sausage_spice', 'sausage_salt', 'sausage_sauce'])" class="w-full py-3 rounded-xl bg-theme-green hover:bg-theme-darkGreen text-white font-black text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-md">
+                    <div class="p-5 pt-0" id="sausage-action-container">
+                        <button onclick="addMeatToCart('Sausage')" class="w-full py-3 rounded-xl bg-theme-green hover:bg-theme-darkGreen text-white font-black text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-md">
                             <i class="fa-solid fa-plus"></i> Add Sausage to Order
                         </button>
                     </div>
@@ -353,65 +396,76 @@
         </section>
 
         <!-- CATEGORY 2: CIDERS (6-PACKS) -->
-        <section id="cat-ciders" class="scroll-mt-36">
+        <section id="cat-ciders" class="scroll-mt-24">
             <div class="border-b border-theme-border pb-3 mb-6">
-                <h2 class="text-2xl font-black text-black">🍏 Ciders (6-Packs)</h2>
+                <h2 class="text-xl sm:text-2xl font-black text-black flex items-center gap-2">
+                    <i class="fa-solid fa-bottle-droplet text-theme-green"></i> Ciders (6-Packs)
+                </h2>
                 <p class="text-xs text-theme-textMuted mt-0.5">Chilled 6-packs ready for instant delivery.</p>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="ciders-container"></div>
         </section>
 
         <!-- CATEGORY 3: SHOTS & SPIRITS -->
-        <section id="cat-spirits" class="scroll-mt-36">
+        <section id="cat-spirits" class="scroll-mt-24">
             <div class="border-b border-theme-border pb-3 mb-6">
-                <h2 class="text-2xl font-black text-black">🥃 Shots & Spirits</h2>
+                <h2 class="text-xl sm:text-2xl font-black text-black flex items-center gap-2">
+                    <i class="fa-solid fa-whiskey-glass text-theme-green"></i> Shots & Spirits
+                </h2>
                 <p class="text-xs text-theme-textMuted mt-0.5">Premium spirit bottles & cognac.</p>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="spirits-container"></div>
         </section>
 
         <!-- CATEGORY 4: BEERS & QUARTS -->
-        <section id="cat-beers" class="scroll-mt-36">
+        <section id="cat-beers" class="scroll-mt-24">
             <div class="border-b border-theme-border pb-3 mb-6">
-                <h2 class="text-2xl font-black text-black">🍺 Beers & Quarts (750ml)</h2>
+                <h2 class="text-xl sm:text-2xl font-black text-black flex items-center gap-2">
+                    <i class="fa-solid fa-beer-mug-empty text-theme-green"></i> Beers & Quarts (750ml)
+                </h2>
                 <p class="text-xs text-theme-textMuted mt-0.5">Cold 6-packs and single 750ml quarts.</p>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="beers-container"></div>
         </section>
 
         <!-- CATEGORY 5: WINE & EXTRAS -->
-        <section id="cat-wine" class="scroll-mt-36">
+        <section id="cat-wine" class="scroll-mt-24">
             <div class="border-b border-theme-border pb-3 mb-6">
-                <h2 class="text-2xl font-black text-black">🍷 Boxed Wine & Ice Packs</h2>
+                <h2 class="text-xl sm:text-2xl font-black text-black flex items-center gap-2">
+                    <i class="fa-solid fa-wine-glass text-theme-green"></i> Boxed Wine & Ice Packs
+                </h2>
                 <p class="text-xs text-theme-textMuted mt-0.5">Wines and 2kg ice bags.</p>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="wine-container"></div>
         </section>
 
         <!-- CATEGORY 6: POOL TOURNAMENT / THIS WEEK ANNOUNCEMENT -->
-        <section id="cat-pool" class="scroll-mt-36 bg-theme-grayBg rounded-3xl p-6 sm:p-10 border border-theme-border relative overflow-hidden">
-            <div class="absolute -right-8 -bottom-8 opacity-10 text-black text-9xl pointer-events-none">
-                <i class="fa-solid fa-8ball"></i>
+        <section id="cat-pool" class="scroll-mt-24 bg-theme-grayBg rounded-3xl p-6 sm:p-10 border border-theme-border relative overflow-hidden">
+            <div class="absolute -right-6 -bottom-6 opacity-5 text-black text-9xl pointer-events-none">
+                <i class="fa-solid fa-trophy"></i>
             </div>
             <div class="max-w-3xl space-y-6">
                 <div>
                     <span class="bg-theme-green text-black text-xs font-black uppercase px-3 py-1 rounded-full">This Week's Announcement</span>
-                    <h2 class="text-3xl font-black text-black mt-2">Mfura's Knockout Pool Tournament</h2>
+                    <h2 class="text-2xl sm:text-3xl font-black text-black mt-2">Mfura's Knockout Pool Tournament</h2>
                     <p class="text-xs sm:text-sm text-theme-textMuted mt-1">
-                        Grand Prize <strong class="text-black font-extrabold">R2000</strong>! Join us this weekend for intense matches, braai meat, and ice cold drinks.
+                        Grand Prize <strong class="text-black font-extrabold">R2000</strong>! Join us this week for competitive matches, braai meat, and ice cold drinks.
                     </p>
                 </div>
 
                 <div class="bg-white p-6 rounded-2xl border border-theme-border shadow-xs space-y-4">
                     <h3 class="font-extrabold text-base text-black flex items-center gap-2">
-                        <i class="fa-solid fa-trophy text-theme-green"></i> Tournament Details & Registration
+                        <i class="fa-solid fa-trophy text-theme-green"></i> Tournament Information
                     </h3>
                     <p class="text-xs text-theme-textMuted leading-relaxed">
-                        Slots are filling up fast for this week's tournament. To register or get full bracket details, please contact <strong class="text-black font-bold">Anda</strong> directly.
+                        Slots are open for this week's pool tournament. Contact <strong class="text-black font-bold">Anda</strong> for more details and registration.
                     </p>
                     <div class="flex flex-wrap items-center gap-3 pt-2">
-                        <a href="https://wa.me/27729116502?text=Hi%20Anda,%20I%20would%20like%20to%20register%20for%20the%20Pool%20Tournament%20(Grand%20Prize%20R2000)." target="_blank" rel="noopener noreferrer" class="px-5 py-3 rounded-xl bg-black text-white hover:bg-theme-green hover:text-black font-black text-xs uppercase tracking-wider transition-all shadow-md flex items-center gap-2">
+                        <a href="https://wa.me/27729116502?text=Hi%20Anda,%20I%20would%20like%20more%20details%20about%20this%20week's%20Pool%20Tournament%20(Grand%20Prize%20R2000)." target="_blank" rel="noopener noreferrer" class="px-5 py-3 rounded-xl bg-black text-white hover:bg-theme-green hover:text-black font-black text-xs uppercase tracking-wider transition-all shadow-md flex items-center gap-2">
                             <i class="fa-brands fa-whatsapp text-base text-theme-green"></i> Contact Anda (072 911 6502)
+                        </a>
+                        <a href="tel:0729116502" class="px-4 py-3 rounded-xl bg-theme-grayBg text-black hover:bg-black hover:text-white border border-theme-border font-bold text-xs transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-phone text-theme-green"></i> Call Anda
                         </a>
                     </div>
                 </div>
@@ -419,34 +473,35 @@
         </section>
 
         <!-- CATEGORY 7: GALLERY SECTION (1.jpg, 2.jpg, 3.jpg) -->
-        <section id="cat-gallery" class="scroll-mt-36">
+        <section id="cat-gallery" class="scroll-mt-24">
             <div class="border-b border-theme-border pb-3 mb-6">
-                <h2 class="text-2xl font-black text-black">📸 Tavern Gallery</h2>
-                <p class="text-xs text-theme-textMuted mt-0.5">Moments at Mfura's Tavern (Est. 2023)</p>
+                <h2 class="text-xl sm:text-2xl font-black text-black flex items-center gap-2">
+                    <i class="fa-solid fa-camera text-theme-green"></i> Tavern Gallery
+                </h2>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 <div class="h-64 sm:h-80 bg-theme-grayBg rounded-2xl overflow-hidden border border-theme-border shadow-xs">
-                    <img src="1.jpg" alt="Tavern Photo 1" class="w-full h-full object-cover hover:scale-105 transition-all duration-300" onerror="this.src='https://placehold.co/600x600/000000/06C167?text=Mfura+Owner'">
+                    <img src="1.jpg" alt="Gallery 1" class="w-full h-full object-cover hover:scale-105 transition-all duration-300" onerror="this.src='https://placehold.co/600x600/000000/06C167?text=1.jpg'">
                 </div>
                 <div class="h-64 sm:h-80 bg-theme-grayBg rounded-2xl overflow-hidden border border-theme-border shadow-xs">
-                    <img src="2.jpg" alt="Tavern Photo 2" class="w-full h-full object-cover hover:scale-105 transition-all duration-300" onerror="this.src='https://placehold.co/600x600/000000/06C167?text=Barman'">
+                    <img src="2.jpg" alt="Gallery 2" class="w-full h-full object-cover hover:scale-105 transition-all duration-300" onerror="this.src='https://placehold.co/600x600/000000/06C167?text=2.jpg'">
                 </div>
                 <div class="h-64 sm:h-80 bg-theme-grayBg rounded-2xl overflow-hidden border border-theme-border shadow-xs">
-                    <img src="3.jpg" alt="Tavern Photo 3" class="w-full h-full object-cover hover:scale-105 transition-all duration-300" onerror="this.src='https://placehold.co/600x600/000000/06C167?text=Vibes+at+Tavern'">
+                    <img src="3.jpg" alt="Gallery 3" class="w-full h-full object-cover hover:scale-105 transition-all duration-300" onerror="this.src='https://placehold.co/600x600/000000/06C167?text=3.jpg'">
                 </div>
             </div>
         </section>
 
     </main>
 
-    <!-- FOOTER -->
+    <!-- FOOTER RIBBON (Only place announcing Opened in 2023) -->
     <footer class="bg-black text-white py-10 border-t border-theme-border">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-gray-400">
             <div class="flex items-center gap-2">
                 <span class="text-lg font-black text-white tracking-tight">Mfura's Tavern</span>
-                <span>• Opened in 2023</span>
+                <span class="text-theme-green font-bold">• Opened in 2023</span>
             </div>
-            <p>793 Roma Street, Fourrooms location, Ilinge Township | WhatsApp Slip Desk: <strong class="text-white">060 942 6396</strong></p>
+            <p class="text-center">793 Roma Street, Fourrooms location, Ilinge Township | WhatsApp Orders: <strong class="text-white">060 942 6396</strong></p>
             <p>&copy; <span id="footer-year"></span> Mfura's Tavern. All rights reserved.</p>
         </div>
     </footer>
@@ -492,7 +547,7 @@
                 <div class="pt-4 border-t border-theme-border space-y-3">
                     <h4 class="text-xs font-black uppercase tracking-wider text-theme-textMuted">2. Fulfillment & Delivery Details</h4>
                     <div class="grid grid-cols-2 gap-2">
-                        <button type="button" id="modal-opt-pickup" onclick="setModalOrderType('Pickup')" class="py-2.5 px-3 rounded-xl border border-black bg-black text-white text-xs font-bold transition-all flex items-center justify-center gap-2">
+                        <button type="button" id="modal-opt-pickup" onclick="setModalOrderType('Pickup')" class="py-2.5 px-3 rounded-xl border border-theme-border bg-theme-grayBg text-black text-xs font-bold transition-all flex items-center justify-center gap-2">
                             <i class="fa-solid fa-person-walking"></i> Pickup (Free)
                         </button>
                         <button type="button" id="modal-opt-delivery" onclick="setModalOrderType('Delivery')" class="py-2.5 px-3 rounded-xl border border-theme-border bg-theme-grayBg text-black text-xs font-bold transition-all flex items-center justify-center gap-2">
@@ -543,20 +598,20 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
                             <label class="block text-xs font-bold text-black mb-1">Your Full Name *</label>
-                            <input type="text" id="cust-name" placeholder="e.g. Ndora M." class="w-full bg-theme-grayBg border border-theme-border rounded-xl px-3 py-2 text-xs font-medium text-black focus:outline-none focus:border-black">
+                            <input type="text" id="cust-name" placeholder="e.g. Sipho M." class="w-full bg-theme-grayBg border border-theme-border rounded-xl px-3 py-2 text-xs font-medium text-black focus:outline-none focus:border-black">
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-black mb-1">WhatsApp Phone Number *</label>
-                            <input type="tel" id="cust-phone" placeholder="e.g. 082 345 7895" class="w-full bg-theme-grayBg border border-theme-border rounded-xl px-3 py-2 text-xs font-medium text-black focus:outline-none focus:border-black">
+                            <input type="tel" id="cust-phone" placeholder="e.g. 072 911 6502" class="w-full bg-theme-grayBg border border-theme-border rounded-xl px-3 py-2 text-xs font-medium text-black focus:outline-none focus:border-black">
                         </div>
                     </div>
 
                     <div class="grid grid-cols-2 gap-2 pt-1">
                         <label class="flex items-center justify-center p-2.5 rounded-xl border border-theme-border bg-theme-grayBg cursor-pointer text-xs font-bold text-black">
-                            <input type="radio" name="pay_method" value="Cash" checked onchange="toggleEftNotice(false)" class="accent-theme-green mr-2"> Cash Payment
+                            <input type="radio" name="pay_method" value="Cash" checked onchange="toggleEftNotice(false)" class="accent-black mr-2"> Cash Payment
                         </label>
                         <label class="flex items-center justify-center p-2.5 rounded-xl border border-theme-border bg-theme-grayBg cursor-pointer text-xs font-bold text-black">
-                            <input type="radio" name="pay_method" value="EFT" onchange="toggleEftNotice(true)" class="accent-theme-green mr-2"> EFT Transfer
+                            <input type="radio" name="pay_method" value="EFT" onchange="toggleEftNotice(true)" class="accent-black mr-2"> EFT Transfer
                         </label>
                     </div>
 
@@ -584,7 +639,7 @@
                     </div>
                     <div class="flex justify-between text-base font-black text-black pt-2 border-t border-theme-border">
                         <span>Total Due</span>
-                        <span id="summary-total" class="text-uber-green">R0.00</span>
+                        <span id="summary-total" class="text-theme-darkGreen">R0.00</span>
                     </div>
                 </div>
 
@@ -609,7 +664,7 @@
                 </div>
                 <div>
                     <h3 class="font-black text-lg text-black">Mfura's Tavern Contacts</h3>
-                    <p class="text-xs text-theme-textMuted">Fourrooms location, Ilinge Township (Opened in 2023)</p>
+                    <p class="text-xs text-theme-textMuted">Fourrooms location, Ilinge Township</p>
                 </div>
             </div>
 
@@ -617,14 +672,14 @@
                 <div class="flex items-center justify-between p-3 rounded-xl bg-theme-grayBg">
                     <div>
                         <p class="font-extrabold text-black">Anda</p>
-                        <p class="text-theme-textMuted text-[11px]">Pool Tournament & Events Desk</p>
+                        <p class="text-theme-textMuted text-[11px]">Pool Tournament & Events</p>
                     </div>
                     <a href="tel:0729116502" class="px-3 py-1.5 bg-black text-white font-bold rounded-lg text-[11px]">072 911 6502</a>
                 </div>
                 <div class="flex items-center justify-between p-3 rounded-xl bg-theme-grayBg">
                     <div>
                         <p class="font-extrabold text-black">Mfura</p>
-                        <p class="text-theme-textMuted text-[11px]">Direct Management & Owner</p>
+                        <p class="text-theme-textMuted text-[11px]">Management</p>
                     </div>
                     <a href="tel:0734987726" class="px-3 py-1.5 bg-black text-white font-bold rounded-lg text-[11px]">073 498 7726</a>
                 </div>
@@ -654,7 +709,7 @@
             spirits: [
                 { id: 's1', name: 'Old Buck Gin', price: 185, desc: '750ml Original Dry Gin Bottle', image: 'Old buck.jpeg' },
                 { id: 's2', name: 'Hennessy Cognac', price: 565, desc: '750ml Very Special Cognac Bottle', image: 'Hennesy.jpeg' },
-                { id: 's3', name: 'Gordon\'s London Dry Gin', price: 200, desc: '750ml London Dry Gin Bottle', image: 'Gordons.jpeg' }
+                { id: 's3', name: "Gordon's London Dry Gin", price: 200, desc: '750ml London Dry Gin Bottle', image: 'Gordons.jpeg' }
             ],
             beers: [
                 { id: 'b1', name: 'Carling Black Label (6-Pack)', price: 136, desc: 'Champion Lager 6-Pack Bottles', image: 'Black label.jpeg' },
@@ -672,15 +727,28 @@
         };
 
         let cart = [];
-        let currentFulfillment = 'Delivery';
+        // Starts null so neither Pickup nor Delivery is highlighted black until user clicks one
+        let currentFulfillment = null;
 
         window.onload = function() {
             renderDrinkCategories();
+            refreshAllMeatActionUIs();
             document.getElementById('footer-year').innerText = new Date().getFullYear();
         };
 
         function scrollToTop() {
             window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showMessageModal(text) {
+            document.getElementById('message-modal-text').innerText = text;
+            const modal = document.getElementById('message-modal');
+            modal.classList.remove('pointer-events-none', 'opacity-0');
+        }
+
+        function hideMessageModal() {
+            const modal = document.getElementById('message-modal');
+            modal.classList.add('pointer-events-none', 'opacity-0');
         }
 
         function showToast(message) {
@@ -689,7 +757,7 @@
             toast.classList.remove('translate-y-[-200%]', 'opacity-0');
             setTimeout(() => {
                 hideToast();
-            }, 4500);
+            }, 4000);
         }
 
         function hideToast() {
@@ -697,6 +765,20 @@
             toast.classList.add('translate-y-[-200%]', 'opacity-0');
         }
 
+        // Toggle black highlight on condiment buttons when clicked
+        function toggleCondimentHighlight(checkbox, labelId) {
+            const label = document.getElementById(labelId);
+            const icon = label.querySelector('i');
+            if (checkbox.checked) {
+                label.className = "inline-flex items-center bg-black text-white border border-black px-3 py-1.5 rounded-lg text-[11px] font-bold cursor-pointer transition-all select-none shadow-xs";
+                if (icon) icon.classList.remove('hidden');
+            } else {
+                label.className = "inline-flex items-center bg-theme-grayBg text-black border border-theme-border px-3 py-1.5 rounded-lg text-[11px] font-bold cursor-pointer transition-all select-none";
+                if (icon) icon.classList.add('hidden');
+            }
+        }
+
+        // Fulfillment selector in cart modal: highlights selected option in black
         function setModalOrderType(type) {
             currentFulfillment = type;
             const btnPickup = document.getElementById('modal-opt-pickup');
@@ -704,11 +786,11 @@
             const delFields = document.getElementById('delivery-fields-container');
 
             if (type === 'Pickup') {
-                btnPickup.className = "py-2.5 px-3 rounded-xl border border-black bg-black text-white text-xs font-bold transition-all flex items-center justify-center gap-2";
+                btnPickup.className = "py-2.5 px-3 rounded-xl border border-black bg-black text-white text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-xs";
                 btnDelivery.className = "py-2.5 px-3 rounded-xl border border-theme-border bg-theme-grayBg text-black text-xs font-bold transition-all flex items-center justify-center gap-2";
                 delFields.classList.add('hidden');
-            } else {
-                btnDelivery.className = "py-2.5 px-3 rounded-xl border border-black bg-black text-white text-xs font-bold transition-all flex items-center justify-center gap-2";
+            } else if (type === 'Delivery') {
+                btnDelivery.className = "py-2.5 px-3 rounded-xl border border-black bg-black text-white text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-xs";
                 btnPickup.className = "py-2.5 px-3 rounded-xl border border-theme-border bg-theme-grayBg text-black text-xs font-bold transition-all flex items-center justify-center gap-2";
                 delFields.classList.remove('hidden');
             }
@@ -730,7 +812,7 @@
                 const qty = cartItem ? cartItem.qty : 0;
                 
                 return `
-                <div class="drink-card bg-white rounded-2xl border border-theme-border hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col justify-between" data-name="${item.name.toLowerCase()}">
+                <div class="menu-item-card bg-white rounded-2xl border border-theme-border hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col justify-between" data-name="${item.name.toLowerCase()}">
                     <div>
                         <div class="h-40 bg-theme-grayBg relative overflow-hidden">
                             <img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/600x400/000000/06C167?text=Drink'">
@@ -748,11 +830,11 @@
                             </button>
                         ` : `
                             <div class="flex items-center justify-between bg-theme-grayBg p-2 rounded-xl border border-theme-border">
-                                <span class="text-xs font-bold text-black pl-2">In Cart:</span>
+                                <span class="text-xs font-bold text-black pl-2">Quantity:</span>
                                 <div class="flex items-center space-x-2 bg-white px-2 py-1 rounded-lg border border-theme-border">
-                                    <button onclick="updateSimpleQty('${item.id}', -1)" class="w-6 h-6 flex items-center justify-center text-black font-bold text-sm hover:bg-theme-grayBg rounded-md">-</button>
+                                    <button onclick="changeQty('${item.id}', -1)" class="w-6 h-6 flex items-center justify-center text-black font-bold text-sm hover:bg-theme-grayBg rounded-md">-</button>
                                     <span class="font-extrabold text-black px-1.5 text-xs">${qty}</span>
-                                    <button onclick="updateSimpleQty('${item.id}', 1)" class="w-6 h-6 flex items-center justify-center text-black font-bold text-sm hover:bg-theme-grayBg rounded-md">+</button>
+                                    <button onclick="changeQty('${item.id}', 1)" class="w-6 h-6 flex items-center justify-center text-black font-bold text-sm hover:bg-theme-grayBg rounded-md">+</button>
                                 </div>
                             </div>
                         `}
@@ -778,50 +860,75 @@
             showToast(`${name} added to cart!`);
         }
 
-        function updateSimpleQty(id, delta) {
-            const index = cart.findIndex(item => item.id === id);
-            if (index > -1) {
-                cart[index].qty += delta;
-                if (cart[index].qty <= 0) {
-                    cart.splice(index, 1);
-                }
-            }
-            updateCartUI();
-            renderDrinkCategories();
-        }
-
-        function addMeatToCart(meatType, priceInputId, prepRadioName, condCheckIds) {
-            const priceInput = document.getElementById(priceInputId);
-            let priceVal = parseFloat(priceInput.value);
-            const minAllowed = meatType === 'Beef' ? 50 : 20;
-
-            if (isNaN(priceVal) || priceVal < minAllowed) {
-                alert(`Minimum price for ${meatType} is R${minAllowed}.`);
-                priceInput.value = minAllowed;
-                priceVal = minAllowed;
-                return;
-            }
-            if (priceVal > 550) {
-                alert("Maximum price for meat is R550.");
-                priceInput.value = 550;
-                priceVal = 550;
-                return;
-            }
-
-            const prepValue = document.querySelector(`input[name="${prepRadioName}"]:checked`).value;
+        // Helper to get current meat config & key
+        function getMeatConfig(meatType) {
+            const lower = meatType.toLowerCase();
+            const priceInput = document.getElementById(`${lower}_price`);
+            const priceVal = parseFloat(priceInput.value);
+            const prepRadio = document.querySelector(`input[name="${lower}_prep"]:checked`);
+            const prepValue = prepRadio ? prepRadio.value : 'Braai';
             
             const conds = [];
-            condCheckIds.forEach(id => {
-                const check = document.getElementById(id);
-                if (check && check.checked) {
-                    const label = id.split('_')[1];
-                    conds.push(label.charAt(0).toUpperCase() + label.slice(1));
+            ['spice', 'salt', 'sauce'].forEach(c => {
+                const el = document.getElementById(`${lower}_${c}`);
+                if (el && el.checked) {
+                    conds.push(c.charAt(0).toUpperCase() + c.slice(1));
                 }
             });
 
+            const itemKey = `meat_${meatType}_${priceVal}_${prepValue}_${conds.join('_')}`;
+            return { lower, priceInput, priceVal, prepValue, conds, itemKey };
+        }
+
+        function refreshAllMeatActionUIs() {
+            ['Beef', 'Pork', 'Sausage'].forEach(m => refreshMeatActionUI(m));
+        }
+
+        function refreshMeatActionUI(meatType) {
+            const { lower, itemKey } = getMeatConfig(meatType);
+            const container = document.getElementById(`${lower}-action-container`);
+            if (!container) return;
+
+            const cartItem = cart.find(ci => ci.id === itemKey);
+            const qty = cartItem ? cartItem.qty : 0;
+
+            if (qty === 0) {
+                container.innerHTML = `
+                    <button onclick="addMeatToCart('${meatType}')" class="w-full py-3 rounded-xl bg-theme-green hover:bg-theme-darkGreen text-white font-black text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-md">
+                        <i class="fa-solid fa-plus"></i> Add ${meatType} to Order
+                    </button>
+                `;
+            } else {
+                container.innerHTML = `
+                    <div class="flex items-center justify-between bg-theme-grayBg p-2.5 rounded-xl border border-theme-border">
+                        <span class="text-xs font-bold text-black pl-2">Quantity:</span>
+                        <div class="flex items-center space-x-2 bg-white px-2.5 py-1 rounded-lg border border-theme-border">
+                            <button onclick="changeQty('${itemKey}', -1)" class="w-7 h-7 flex items-center justify-center text-black font-bold text-sm hover:bg-theme-grayBg rounded-md">-</button>
+                            <span class="font-extrabold text-black px-2 text-xs">${qty}</span>
+                            <button onclick="changeQty('${itemKey}', 1)" class="w-7 h-7 flex items-center justify-center text-black font-bold text-sm hover:bg-theme-grayBg rounded-md">+</button>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function addMeatToCart(meatType) {
+            const { priceInput, priceVal, prepValue, conds, itemKey } = getMeatConfig(meatType);
+            const minAllowed = meatType === 'Beef' ? 50 : 20;
+
+            if (isNaN(priceVal) || priceVal < minAllowed) {
+                showMessageModal(`Minimum price for ${meatType} is R${minAllowed}.`);
+                priceInput.value = minAllowed;
+                return;
+            }
+            if (priceVal > 550) {
+                showMessageModal("Maximum price for meat is R550.");
+                priceInput.value = 550;
+                return;
+            }
+
             const condStr = conds.length > 0 ? conds.join(', ') : 'No condiments';
             const itemTitle = `${meatType} (${prepValue})`;
-            const itemKey = `meat_${meatType}_${priceVal}_${prepValue}_${conds.join('_')}`;
             const meatImg = meatType === 'Beef' ? 'beef.jpeg' : meatType === 'Pork' ? 'pork.jpeg' : 'Wors.jpeg';
 
             const existingIndex = cart.findIndex(item => item.id === itemKey);
@@ -839,6 +946,7 @@
             }
 
             updateCartUI();
+            refreshMeatActionUI(meatType);
             showToast(`${itemTitle} (R${priceVal}) added to cart!`);
         }
 
@@ -852,6 +960,7 @@
             }
             updateCartUI();
             renderDrinkCategories();
+            refreshAllMeatActionUIs();
         }
 
         function updateCartUI() {
@@ -926,8 +1035,11 @@
 
         function toggleCartModal(open) {
             const modal = document.getElementById('cart-modal');
-            if (open) modal.classList.remove('pointer-events-none', 'opacity-0');
-            else modal.classList.add('pointer-events-none', 'opacity-0');
+            if (open) {
+                modal.classList.remove('pointer-events-none', 'opacity-0');
+            } else {
+                modal.classList.add('pointer-events-none', 'opacity-0');
+            }
         }
 
         function toggleContactModal(open) {
@@ -937,17 +1049,22 @@
         }
 
         function handleMenuSearch() {
-            const query = document.getElementById('menu-search-input').value.toLowerCase();
-            const drinkCards = document.querySelectorAll('.drink-card');
-            drinkCards.forEach(card => {
-                const name = card.getAttribute('data-name');
+            const query = document.getElementById('menu-search-input').value.toLowerCase().trim();
+            const cards = document.querySelectorAll('.menu-item-card');
+            cards.forEach(card => {
+                const name = card.getAttribute('data-name') || '';
                 card.style.display = name.includes(query) ? "flex" : "none";
             });
         }
 
         function submitOrderToWhatsApp() {
             if (cart.length === 0) {
-                alert("Your cart is empty! Add items before placing an order.");
+                showMessageModal("Your cart is empty! Add items before placing an order.");
+                return;
+            }
+
+            if (!currentFulfillment) {
+                showMessageModal("Please select either Pickup (Free) or Delivery before generating your order slip.");
                 return;
             }
 
@@ -956,7 +1073,7 @@
             const payMethod = document.querySelector('input[name="pay_method"]:checked').value;
 
             if (!name || !phone) {
-                alert("Please fill in your Name and Phone Number.");
+                showMessageModal("Please fill in your Name and WhatsApp Phone Number.");
                 return;
             }
 
@@ -969,7 +1086,7 @@
                 timeSlot = document.getElementById('delivery-time-select').value;
 
                 if (!deliveryArea || !address) {
-                    alert("Please fill in your delivery area and address.");
+                    showMessageModal("Please select your delivery area and enter your street address.");
                     return;
                 }
                 if (timeSlot.includes('20:00-23:00')) deliveryFee = 50;
@@ -978,19 +1095,19 @@
             const subtotal = cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
             const total = subtotal + deliveryFee;
 
-            let slip = `🛒 *MFURA'S BRAAI ORDER SLIP* 🛒\n\n`;
-            slip += `👤 *Customer:* ${name}\n📞 *Contact:* ${phone}\n📦 *Fulfillment:* ${currentFulfillment.toUpperCase()}\n`;
+            let slip = `*MFURA'S TAVERN ORDER SLIP*\n\n`;
+            slip += `*Customer:* ${name}\n*Contact:* ${phone}\n*Fulfillment:* ${currentFulfillment.toUpperCase()}\n`;
             if (currentFulfillment === 'Delivery') {
-                slip += `📍 *Area:* ${deliveryArea}\n🏠 *Address:* ${address}\n⏰ *Slot:* ${timeSlot}\n`;
+                slip += `*Area:* ${deliveryArea}\n*Address:* ${address}\n*Slot:* ${timeSlot}\n`;
             }
-            slip += `💳 *Payment:* ${payMethod}\n\n*--- ITEMS ---*\n`;
+            slip += `*Payment:* ${payMethod}\n\n*--- ITEMS ---*\n`;
             cart.forEach((item, i) => {
                 slip += `${i + 1}. *${item.name}* x${item.qty} = R${(item.price * item.qty).toFixed(2)}\n`;
-                if (item.details) slip += `   └ _${item.details}_\n`;
+                if (item.details) slip += `   - _${item.details}_\n`;
             });
             slip += `\nSubtotal: R${subtotal.toFixed(2)}\nDelivery: R${deliveryFee.toFixed(2)}\n*TOTAL DUE: R${total.toFixed(2)}*\n\n`;
-            if (payMethod === 'EFT') slip += `⚠️ *EFT Disclaimer:* Send POP via WhatsApp to 0609426396.\n\n`;
-            slip += `Thank you for ordering with Mfura's Tavern (Opened in 2023)! 🍻`;
+            if (payMethod === 'EFT') slip += `*EFT Notice:* Send Proof of Payment via WhatsApp to 0609426396.\n\n`;
+            slip += `Thank you for ordering with Mfura's Tavern!`;
 
             window.open(`https://wa.me/27609426396?text=${encodeURIComponent(slip)}`, '_blank');
         }
